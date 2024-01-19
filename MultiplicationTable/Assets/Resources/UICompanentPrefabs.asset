@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec6fc4744dc14d448b327e686baa682d, type: 3}
   m_Name: UICompanentPrefabs
   m_EditorClassIdentifier: 
+  <Prefabs>k__BackingField:
+  - {fileID: 7066398465038307310, guid: 98535da54d42c534992a6e4d2ac377b3, type: 3}
+  - {fileID: 711412899653281526, guid: f8795848471f8654aa4d23705452d69f, type: 3}
+  - {fileID: 1925227388834527082, guid: 3111eb620eb841b439a6b035b4781c64, type: 3}

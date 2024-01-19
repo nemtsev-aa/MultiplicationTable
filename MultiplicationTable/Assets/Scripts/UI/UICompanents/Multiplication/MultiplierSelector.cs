@@ -12,53 +12,73 @@ public enum MultiplierSelectorStatus {
 public class MultiplierSelector : UICompanent {
     public event Action<int> MultiplierSelected;
 
-    [SerializeField] private Button _button;
+    [SerializeField] private Toggle _toggle;
     [SerializeField] private TextMeshProUGUI _label;
     [SerializeField] private Image _statusIcon;
-
+    
+    [Space(10), Header("StatusSprites")]
     [SerializeField] private Sprite _compliteSprite;
     [SerializeField] private Sprite _unCompliteSprite;
+
+    private Color _text—olorSelectedToggle;
+    private Color _text—olorDeselectedToggle;
 
     private int _index;
     private MultiplierSelectorStatus _status;
     
-    public void Int(MultiplierButtonConfig config) {
+    public void Int(MultiplierButtonConfig config, ToggleGroup group) {
         _index = config.Index;
         _status = config.Status;
+        _toggle.group = group;
 
-        FillingOutPartners();
-
-        _button.onClick.AddListener(ButtonClick);
+        SetColors();
+        FillingInComponents();
     }
 
-    private void FillingOutPartners() {
+    private void OnEnable() {
+        _toggle.onValueChanged.AddListener(ToggleClick);
+    }
+
+    private void OnDisable() {
+        _toggle.onValueChanged.RemoveListener(ToggleClick);
+    }
+
+    private void SetColors() {
+        _text—olorSelectedToggle = _toggle.colors.normalColor;
+        _text—olorDeselectedToggle = _toggle.colors.selectedColor;
+    }
+
+    private void FillingInComponents() {
         _label.text = $"{_index}X";
+        _label.color = _text—olorDeselectedToggle;
 
-        var sprite = GetSpriteByType();
-        if (sprite != null) {
-            _statusIcon.gameObject.SetActive(true);
-            _statusIcon.sprite = sprite;
-        }
-        else
-            _statusIcon.gameObject.SetActive(false);
+        SetSpriteByType();
     }
 
-    private Sprite GetSpriteByType() {
+    private void SetSpriteByType() {
         switch (_status) {
             case MultiplierSelectorStatus.Complite:
-                return _compliteSprite;
+                _statusIcon.gameObject.SetActive(true);
+                _statusIcon.sprite = _compliteSprite;
+                break;
 
             case MultiplierSelectorStatus.UnConplite:
-                return _unCompliteSprite;
+                _statusIcon.gameObject.SetActive(true);
+                _statusIcon.sprite = _unCompliteSprite;
+                break;
 
             case MultiplierSelectorStatus.Empty:
-                return null;
-
-            default:
-                throw new ArgumentException(nameof(_status));
+                _statusIcon.gameObject.SetActive(false);
+                break;
         }
     }
 
-    private void ButtonClick() => MultiplierSelected?.Invoke(_index);
-
+    private void ToggleClick(bool status) {
+        if (status) {
+            _label.color = _text—olorSelectedToggle;
+            MultiplierSelected?.Invoke(_index);
+        }
+        else
+            _label.color = _text—olorDeselectedToggle;
+    }
 }

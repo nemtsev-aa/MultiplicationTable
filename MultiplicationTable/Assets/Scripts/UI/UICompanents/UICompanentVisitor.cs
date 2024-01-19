@@ -11,6 +11,9 @@ public class UICompanentVisitor : ICompanentVisitor {
     public UICompanent Companent { get; private set; }
 
     public void Visit(UICompanentConfig config) => Visit((dynamic)config);
+    
+    public void Visit(ModeSelectorConfig modeSelector)
+        => Companent = _companents.FirstOrDefault(companent => companent is ModeSelector);
 
     public void Visit(MultiplierButtonConfig multiplierButton) 
         => Companent = _companents.FirstOrDefault(companent => companent is MultiplierSelector);

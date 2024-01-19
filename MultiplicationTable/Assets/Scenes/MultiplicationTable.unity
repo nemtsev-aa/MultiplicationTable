@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028355, g: 0.22571374, b: 0.30692255, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -153,9 +153,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uIManager: {fileID: 1192012933}
-  _levelsConfig: {fileID: 1146248624}
-  _dialogFactory: {fileID: 0}
-  _companentsFactory: {fileID: 0}
 --- !u!4 &209119977
 Transform:
   m_ObjectHideFlags: 0
@@ -169,7 +166,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
@@ -453,63 +450,6 @@ Transform:
   m_Father: {fileID: 1351992115}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1146248623
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1146248625}
-  - component: {fileID: 1146248624}
-  m_Layer: 0
-  m_Name: LevelsConfig
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1146248624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146248623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 649b4e6dcb5e2584fac64e7a76225f71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <Configs>k__BackingField:
-  - <Type>k__BackingField: 0
-    <Name>k__BackingField: "\u041F\u0440\u043E\u0441\u0442\u043E"
-    <TimeDuration>k__BackingField: 30
-  - <Type>k__BackingField: 1
-    <Name>k__BackingField: "\u0421\u0440\u0435\u0434\u043D\u0435"
-    <TimeDuration>k__BackingField: 25
-  - <Type>k__BackingField: 2
-    <Name>k__BackingField: "\u0421\u043B\u043E\u0436\u043D\u043E"
-    <TimeDuration>k__BackingField: 15
-  - <Type>k__BackingField: 3
-    <Name>k__BackingField: "\u042D\u043A\u0441\u043F\u0435\u0440\u0442"
-    <TimeDuration>k__BackingField: 10
---- !u!4 &1146248625
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146248623}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1192012932
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,7 +493,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1351992114
 GameObject:
@@ -650,7 +590,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1521483315
 GameObject:

@@ -6,8 +6,15 @@ using UnityEngine.UI;
 
 public abstract class Dialog : MonoBehaviour, IDisposable {
     public event Action BackClicked;
+    public event Action SettingsClicked;
+    public event Action ShareClicked;
+    public event Action HistoryClicked;
 
     [SerializeField] protected Button BackButton;
+    [SerializeField] protected Button SettingsButton;
+    [SerializeField] protected Button ShareButton;
+    [SerializeField] protected Button HistoryButton;
+
     [SerializeField] protected List<UIPanel> Panels = new List<UIPanel>();
 
     protected DialogMediator Mediator;
@@ -40,10 +47,22 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
     public virtual void AddListeners() {
         if (BackButton != null)
             BackButton.onClick.AddListener(BackButtonClick);
+        
+        if (SettingsButton != null)
+            SettingsButton.onClick.AddListener(SettingsButtonClick);
+
+        if (ShareButton != null)
+            ShareButton.onClick.AddListener(ShareButtonClick);
+
+        if (HistoryButton != null)
+            HistoryButton.onClick.AddListener(HistoryButtonClick);
     }
 
     public virtual void RemoveListeners() {
         BackButton.onClick.RemoveListener(BackButtonClick);
+        SettingsButton.onClick.RemoveListener(SettingsButtonClick);
+        ShareButton.onClick.RemoveListener(ShareButtonClick);
+        HistoryButton.onClick.RemoveListener(HistoryButtonClick);
     }
 
     public virtual T GetPanelByType<T>() where T : UIPanel {
@@ -51,7 +70,13 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
     }
 
     private void BackButtonClick() => BackClicked?.Invoke();
-   
+
+    private void SettingsButtonClick() => SettingsClicked?.Invoke();
+
+    private void ShareButtonClick() => ShareClicked?.Invoke();
+
+    private void HistoryButtonClick() => HistoryClicked?.Invoke();
+
     public void Dispose() {
         RemoveListeners();
     }

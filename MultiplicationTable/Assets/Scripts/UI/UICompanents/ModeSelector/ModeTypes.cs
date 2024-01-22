@@ -1,4 +1,5 @@
 public enum ModeTypes {
     Learning,
-    Training
+    Training,
+    Exam
 }

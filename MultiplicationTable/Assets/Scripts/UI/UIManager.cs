@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour, IDisposable {
 
         _dialogSwitcher = new DialogSwitcher(this);
         _dialogMediator = new DialogMediator(this, _dialogSwitcher);
+        _dialogMediator.Init();
 
         _dialogSwitcher.ShowDialog(DialogTypes.MainMenu);
     }
@@ -48,6 +49,7 @@ public class UIManager : MonoBehaviour, IDisposable {
                 { DialogTypes.MainMenu, _dialogFactory.GetDialog<MainMenuDialog>()},
                 { DialogTypes.LearningMode, _dialogFactory.GetDialog<LearningModeDialog>()},
                 { DialogTypes.TrainingMode, _dialogFactory.GetDialog<TrainingModeDialog>()},
+                { DialogTypes.ExamMode, _dialogFactory.GetDialog<ExamModeDialog>()},
                 { DialogTypes.Settings, _dialogFactory.GetDialog<SettingsDialog>()},
                 { DialogTypes.History, _dialogFactory.GetDialog<HistoryDialog>()}
             };

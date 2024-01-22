@@ -12,6 +12,7 @@ public class DialogFactory {
             {typeof(MainMenuDialog), nameof(MainMenuDialog)},
             {typeof(LearningModeDialog), nameof(LearningModeDialog)},
             {typeof(TrainingModeDialog), nameof(TrainingModeDialog)},
+            {typeof(ExamModeDialog), nameof(ExamModeDialog)},
             {typeof(SettingsDialog), nameof(SettingsDialog)},
             {typeof(HistoryDialog), nameof(HistoryDialog)},
     };

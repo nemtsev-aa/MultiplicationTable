@@ -13,20 +13,22 @@ public class ModeSelector : UICompanent {
     private Color _text—olorSelectedToggle;
     private Color _text—olorDeselectedToggle;
     private ModeSelectorConfig _config;
-
+    private bool _isSelect = false;
+    
     public void Int(ModeSelectorConfig config, ToggleGroup group) {
         _config = config;
         _toggle.group = group;
 
+        CreateSubscribes();
         SetColors();
         FillingInComponents();
     }
 
-    private void OnEnable() {
+    private void CreateSubscribes() {
         _toggle.onValueChanged.AddListener(ToggleClick);
     }
-
-    private void OnDisable() {
+    
+    public void RemoveSubscribes() {
         _toggle.onValueChanged.RemoveListener(ToggleClick);
     }
 
@@ -41,16 +43,22 @@ public class ModeSelector : UICompanent {
     }
 
     private void ToggleClick(bool status) {
-        if (status) {
+        if (status == true && _isSelect == true) {
+            ModeSelected?.Invoke(_config.Type);
+        } else if (status == true) {
             _modeName.color = _text—olorSelectedToggle;
             _modeIcon.color = _text—olorSelectedToggle;
-
-            ModeSelected?.Invoke(_config.Type);
-        }
-        else {
+            _isSelect = true;  
+        } else if (status == false) {
             _modeName.color = _text—olorDeselectedToggle;
             _modeIcon.color = _text—olorDeselectedToggle;
-        }
-            
+            _isSelect = false;
+        }    
+    }
+
+    public override void Dispose() {
+        base.Dispose();
+
+        RemoveSubscribes();
     }
 }

@@ -20,6 +20,7 @@ public class Cell : UICompanent {
                 throw new ArgumentOutOfRangeException($"Invalid Position value: {value}");
             
             _position = value;
+            transform.position = _position;
         }
     }
 

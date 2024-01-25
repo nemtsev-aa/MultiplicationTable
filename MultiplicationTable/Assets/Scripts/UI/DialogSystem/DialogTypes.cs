@@ -4,5 +4,6 @@ public enum DialogTypes {
     TrainingMode,
     ExamMode,
     Settings,
-    History
+    History,
+    DrawingByMultiplication
 }

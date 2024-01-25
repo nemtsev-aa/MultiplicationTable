@@ -51,7 +51,8 @@ public class UIManager : MonoBehaviour, IDisposable {
                 { DialogTypes.TrainingMode, _dialogFactory.GetDialog<TrainingModeDialog>()},
                 { DialogTypes.ExamMode, _dialogFactory.GetDialog<ExamModeDialog>()},
                 { DialogTypes.Settings, _dialogFactory.GetDialog<SettingsDialog>()},
-                { DialogTypes.History, _dialogFactory.GetDialog<HistoryDialog>()}
+                { DialogTypes.History, _dialogFactory.GetDialog<HistoryDialog>()},
+                { DialogTypes.DrawingByMultiplication, _dialogFactory.GetDialog<DrawingByMultiplicationDialog>()}
             };
 
         foreach (var iDialog in _dialogsDictionary.Values) {

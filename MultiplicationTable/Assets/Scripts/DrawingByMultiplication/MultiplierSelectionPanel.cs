@@ -18,7 +18,10 @@ public class MultiplierSelectionPanel : UIPanel {
     }
 
     public void Init(MultipliersConfig config) {
+        _config = config;
+
         CreateNumberViews();
+        Show(false);
     }
 
     public override void RemoveListeners() {
@@ -30,10 +33,13 @@ public class MultiplierSelectionPanel : UIPanel {
     }
 
     private void CreateNumberViews() {
+        _numberViews = new List<NumberView>();
+
         foreach (var iConfig in _config.Multipliers) {
             NumberViewConfig config = new NumberViewConfig(iConfig);
 
             NumberView newView = _factory.Get<NumberView>(config, _parent);
+            newView.Init(config);
             newView.ViewSelected += OnViewSelected;
 
             _numberViews.Add(newView);

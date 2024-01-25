@@ -15,6 +15,7 @@ public class DialogFactory {
             {typeof(ExamModeDialog), nameof(ExamModeDialog)},
             {typeof(SettingsDialog), nameof(SettingsDialog)},
             {typeof(HistoryDialog), nameof(HistoryDialog)},
+            {typeof(DrawingByMultiplicationDialog), nameof(DrawingByMultiplicationDialog)}
     };
 
     public DialogFactory(DiContainer container) {

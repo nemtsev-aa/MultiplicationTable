@@ -9,19 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a321fb71526a68a4b9bdcc0d228cff4c, type: 3}
-  m_Name: Question
+  m_Script: {fileID: 11500000, guid: 46e31a7a73ad3dd4f96cbb11b7e3421b, type: 3}
+  m_Name: QuestionsConfig
   m_EditorClassIdentifier: 
   <Equations>k__BackingField:
   - <Multipliable>k__BackingField: 4
     <Result>k__BackingField: 20
-    <BaseColor>k__BackingField: {r: 0.99215686, g: 0, b: 0.41960785, a: 1}
+    <BaseColor>k__BackingField: {r: 1, g: 0, b: 0.5498705, a: 1}
   - <Multipliable>k__BackingField: 5
     <Result>k__BackingField: 35
-    <BaseColor>k__BackingField: {r: 0.99215686, g: 0, b: 0.028847106, a: 1}
+    <BaseColor>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
   - <Multipliable>k__BackingField: 5
     <Result>k__BackingField: 30
-    <BaseColor>k__BackingField: {r: 0.99215686, g: 0, b: 0.41960785, a: 1}
+    <BaseColor>k__BackingField: {r: 1, g: 0, b: 0.54901963, a: 1}
   - <Multipliable>k__BackingField: 2
     <Result>k__BackingField: 8
-    <BaseColor>k__BackingField: {r: 0.99215686, g: 0, b: 0.02745098, a: 1}
+    <BaseColor>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
+  - <Multipliable>k__BackingField: 6
+    <Result>k__BackingField: 42
+    <BaseColor>k__BackingField: {r: 1, g: 0, b: 0.54901963, a: 1}

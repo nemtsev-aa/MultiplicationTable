@@ -5,11 +5,10 @@ using System;
 
 public class CellsPanel : UIPanel {
     [SerializeField] private RectTransform _cellsParent;
+    [SerializeField] private Cell _activeCell;
 
     private List<Cell> _cells;
     private UICompanentsFactory _factory;
-    
-    public IReadOnlyList<Cell> Cells => _cells;
     
     [Inject]
     private void Construct(UICompanentsFactory companentsFactory) {
@@ -18,28 +17,12 @@ public class CellsPanel : UIPanel {
 
     public void Init() {
         CreateCells();
+
+        _activeCell = _cells[0];
     }
 
-    public void MoveActiveCell(OffsetDirections offset) {
-        switch (offset) {
-            case OffsetDirections.Left:
-
-                break;
-
-            case OffsetDirections.Up:
-
-                break;
-            case OffsetDirections.Down:
-
-                break;
-
-            case OffsetDirections.Right:
-
-                break;
-
-            default:
-                throw new ArgumentException($"Invalid OffsetDirections: {offset}");
-        }
+    public void MoveActiveCell(OffsetDirections offsetDirection) {
+        _activeCell.Position = GetNewPosition(offsetDirection);
     }
 
     private void CreateCells() {
@@ -63,4 +46,30 @@ public class CellsPanel : UIPanel {
         }
     }
 
+    private Vector2 GetNewPosition(OffsetDirections offsetDirection) {
+        Vector2 offsetValue = Vector2.zero;
+
+        switch (offsetDirection) {
+            case OffsetDirections.Left:
+                offsetValue = new Vector2(_activeCell.Position.x - 1, _activeCell.Position.y);
+                break;
+
+            case OffsetDirections.Up:
+                offsetValue = new Vector2(_activeCell.Position.x, _activeCell.Position.y + 1);
+                break;
+
+            case OffsetDirections.Down:
+                offsetValue = new Vector2(_activeCell.Position.x, _activeCell.Position.y - 1);
+                break;
+
+            case OffsetDirections.Right:
+                offsetValue = new Vector2(_activeCell.Position.x + 1, _activeCell.Position.y);
+                break;
+
+            default:
+                throw new ArgumentException($"Invalid OffsetDirections: {offsetDirection}");
+        }
+
+        return offsetValue;
+    }
 }

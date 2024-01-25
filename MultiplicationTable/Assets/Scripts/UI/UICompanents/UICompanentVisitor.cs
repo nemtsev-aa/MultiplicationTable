@@ -20,5 +20,12 @@ public class UICompanentVisitor : ICompanentVisitor {
 
     public void Visit(DifficultyLevelSelectorConfig difficultyLevelSelector) 
         => Companent = _companents.FirstOrDefault(companent => companent is DifficultyLevelSelector);
+    
+    public void Visit(NumberViewConfig numberViewConfig)
+        => Companent = _companents.FirstOrDefault(companent => companent is NumberView);
 
+    public void Visit(CellConfig cellConfig) 
+        => Companent = _companents.FirstOrDefault(companent => companent is Cell);
+
+    
 }

@@ -78,3 +78,4 @@ MonoBehaviour:
     type: 2}
   _modsConfig: {fileID: 11400000, guid: c37034d5d68c543489de04e4c1c2df5f, type: 2}
   _levelsConfig: {fileID: 11400000, guid: 5e53a27dd500a1a42b4ef2a2968e7a02, type: 2}
+  _questionsConfig: {fileID: 11400000, guid: 20175eb09cdde8e47919d8ca5e9db137, type: 2}

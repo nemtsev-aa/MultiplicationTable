@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 
-public class Cell : MonoBehaviour {
+public class Cell : UICompanent {
     [SerializeField] private Image _background;
     [SerializeField] private TextMeshProUGUI _textLabel;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class EquationView : UICompanent {
-    public event Action<bool> NumberInputStatusChanged;
+    public event Action NumberInputStatusChanged;
 
     [SerializeField] private Button _numberInputButton;
     [SerializeField] private TextMeshProUGUI _multipliableText;
@@ -12,7 +12,6 @@ public class EquationView : UICompanent {
     [SerializeField] private TextMeshProUGUI _resultText;
     [SerializeField] private Image _backgroundColor;
 
-    private bool _isSelect = false;
     private EquationData _data;
 
     public int Multiplier => _data.Multiplier;
@@ -22,13 +21,6 @@ public class EquationView : UICompanent {
 
         CreateSubscribers();
         FillingCompanents();
-    }
-
-    public override void Show(bool value) {
-        base.Show(value);
-
-        if (value == false)
-            _isSelect = false;
     }
     
     public void ShowMultiplier(string value) {
@@ -50,12 +42,7 @@ public class EquationView : UICompanent {
     }
 
     private void NumberInputButtonClick() {
-        if (_isSelect)
-            _isSelect = false;
-        else
-            _isSelect = true;
-
-        NumberInputStatusChanged?.Invoke(_isSelect);
+        NumberInputStatusChanged?.Invoke();
     }
 
     public override void Dispose() {

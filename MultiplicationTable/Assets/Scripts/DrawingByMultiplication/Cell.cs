@@ -2,14 +2,36 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using TMPro;
+using UnityEngine.EventSystems;
 
-public class Cell : UICompanent {
+[Serializable]
+public struct CellStateConfig {
+    public CellStateConfig(Sprite sprite, Color color) {
+        Sprite = sprite;
+        Color = color;
+    }
+
+    [field: SerializeField] public Color Color { get; set; }
+    [field: SerializeField] public Sprite Sprite { get; set; }
+}
+
+public class Cell : UICompanent, IPointerDownHandler {
+    public event Action<Cell> Selected;
+
+    [Header("CellStateConfigs")]
+    [SerializeField] private CellStateConfig _emptyConfig;
+    [SerializeField] private CellStateConfig _activeConfig;
+
+    [Space(10)]
     [SerializeField] private Image _background;
     [SerializeField] private TextMeshProUGUI _textLabel;
 
+    private CellStateConfig _fillConfig;
     private Vector2 _position;
     private string _textValue;
 
+    public CellStates CurrentState { get; private set; } = CellStates.Empty;
+    
     public Vector2 Position {
         get { 
             return _position;
@@ -35,15 +57,40 @@ public class Cell : UICompanent {
         }
     }
 
-    public Color MainColor { get; set; }
-    
-    public Color BackColor { get; set; } = Color.white;
-
-    public void ShowColor(bool status) {
-        if (status == true)
-            _background.color = MainColor;
-
-        _background.color = BackColor;
+    public void OnPointerDown(PointerEventData eventData) {
+        Debug.Log($"{Position}");
+        Selected?.Invoke(this); 
     }
 
+    public void SetState(CellStates state, Color color = default) {
+        CurrentState = state;
+
+        if (CurrentState == CellStates.Fill) 
+            _fillConfig = new CellStateConfig(_emptyConfig.Sprite, color);
+        
+        FillingCompanents();
+    }
+
+    private void FillingCompanents() {
+        var config = GetConfigByState(CurrentState);
+        
+        _background.color = config.Color;
+        _background.sprite = config.Sprite;
+    }
+
+    private CellStateConfig GetConfigByState(CellStates state) {
+        switch (state) {
+            case CellStates.Empty:
+                return _emptyConfig;
+               
+            case CellStates.Active:
+                return _activeConfig;
+
+            case CellStates.Fill:
+                return _fillConfig;
+
+            default:
+                throw new ArgumentException($"Invalid CellStates: {state}");
+        }
+    }
 }

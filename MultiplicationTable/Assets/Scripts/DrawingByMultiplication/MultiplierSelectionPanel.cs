@@ -46,6 +46,8 @@ public class MultiplierSelectionPanel : UIPanel {
         }
     }
 
-    private void OnViewSelected(int multiplier) => MultiplierSelected?.Invoke(multiplier);
-
+    private void OnViewSelected(int multiplier) {
+        Show(false);
+        MultiplierSelected?.Invoke(multiplier);
+    } 
 }

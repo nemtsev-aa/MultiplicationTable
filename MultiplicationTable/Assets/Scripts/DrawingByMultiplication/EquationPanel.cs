@@ -7,15 +7,10 @@ public class EquationPanel : UIPanel {
     [SerializeField] private EquationView _equationView;
 
     private EquationData _data;
-
+    private bool _isSelect = false;
+    
     public void Init() {
         AddListeners();
-    }
-
-    public override void Show(bool value) {
-        base.Show(value);
-
-        _equationView.Show(value);
     }
 
     public override void AddListeners() {
@@ -31,17 +26,25 @@ public class EquationPanel : UIPanel {
     }
 
     public void ShowEquation(EquationData data) {
-        _data = data;
+        if (data != null) {
+            _data = data;
 
-        var config = new EquationViewConfig(_data);
-        _equationView.Init(config);
+            var config = new EquationViewConfig(_data);
+            _equationView.Init(config);
+        } 
     }
 
     public void SetMultiplier(int multiplier) {
-        _equationView.ShowMultiplier($"{multiplier}"); 
+        _isSelect = false;
+        _equationView.ShowMultiplier($"{multiplier}");
     }
 
-    private void OnNumberInputStatusChanged(bool status) {
-        MultiplierSelectionPanelShowed?.Invoke(status);
+    private void OnNumberInputStatusChanged() {
+        if (_isSelect)
+            _isSelect = false;
+        else
+            _isSelect = true;
+
+        MultiplierSelectionPanelShowed?.Invoke(_isSelect);
     }
 }

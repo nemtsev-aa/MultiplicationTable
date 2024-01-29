@@ -60,6 +60,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1417f895f47895b4dbc8618076a63d6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _emptyConfig:
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: dae719cc6ae5b4091b66fa23139b23be,
+      type: 3}
+  _activeConfig:
+    <Color>k__BackingField: {r: 0, g: 1, b: 0.9003706, a: 1}
+    <Sprite>k__BackingField: {fileID: 21300000, guid: e5343799bfa9e4e4c9edf6b3b99c0eb5,
+      type: 3}
   _background: {fileID: 5947829996023202441}
   _textLabel: {fileID: 4474310057434679072}
 --- !u!1 &5896228831631020671
@@ -173,7 +181,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3808165738289510837

@@ -92,7 +92,7 @@ public class DialogMediator : IDisposable {
                 break;
 
             case ModeTypes.Training:
-                _dialogSwitcher.ShowDialog(DialogTypes.TrainingMode);
+                _dialogSwitcher.ShowDialog(DialogTypes.DrawingByMultiplication);
                 break;
 
             case ModeTypes.Exam:

@@ -31,44 +31,25 @@ public class Cell : UICompanent, IPointerDownHandler {
     private string _textValue;
 
     public CellStates CurrentState { get; private set; } = CellStates.Empty;
-    
-    public Vector2 Position {
-        get { 
-            return _position;
-        }
 
-        set {
-            if (value.x < 0 || value.y < 0) 
-                throw new ArgumentOutOfRangeException($"Invalid Position value: {value}");
-            
-            _position = value;
-            transform.position = _position;
-        }
+    public Vector2 Position => transform.position;
+    
+    public void Init(Color color, Vector2 position) {
+        _fillConfig = new CellStateConfig(_emptyConfig.Sprite, color);
+        transform.position = position;
+
+        SetState(CellStates.Empty);
     }
 
-    public string TextValue {
-        get { 
-            return _textValue;
-        }
-
-        set {
-            _textValue = value;
-            _textLabel.text = _textValue;
-        }
+    public void SetState(CellStates state) {
+        CurrentState = state;
+        
+        FillingCompanents();
     }
 
     public void OnPointerDown(PointerEventData eventData) {
         Debug.Log($"{Position}");
         Selected?.Invoke(this); 
-    }
-
-    public void SetState(CellStates state, Color color = default) {
-        CurrentState = state;
-
-        if (CurrentState == CellStates.Fill) 
-            _fillConfig = new CellStateConfig(_emptyConfig.Sprite, color);
-        
-        FillingCompanents();
     }
 
     private void FillingCompanents() {

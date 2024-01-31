@@ -61,11 +61,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _emptyConfig:
-    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Color>k__BackingField: {r: 1, g: 0, b: 0.7468691, a: 1}
     <Sprite>k__BackingField: {fileID: 21300000, guid: dae719cc6ae5b4091b66fa23139b23be,
       type: 3}
   _activeConfig:
-    <Color>k__BackingField: {r: 0, g: 1, b: 0.9003706, a: 1}
+    <Color>k__BackingField: {r: 0.040607214, g: 1, b: 0, a: 1}
     <Sprite>k__BackingField: {fileID: 21300000, guid: e5343799bfa9e4e4c9edf6b3b99c0eb5,
       type: 3}
   _background: {fileID: 5947829996023202441}

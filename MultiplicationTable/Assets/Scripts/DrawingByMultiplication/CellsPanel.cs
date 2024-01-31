@@ -3,40 +3,53 @@ using UnityEngine;
 using Zenject;
 using System;
 using System.Linq;
+using UnityEditor;
+using System.IO;
 
 public class CellsPanel : UIPanel {
     public event Action<Cell> ActiveCellChanged;
 
     [SerializeField] private RectTransform _cellsParent;
+    [SerializeField] private List<Cell> _emptyCells;
 
     private List<Cell> _cells;
     private Cell _activeCell;
     private UICompanentsFactory _factory;
-    private QuestionsConfig _question;
+    private DrawingData _drawingData;
+    private Color32[] _pixels;
 
     [Inject]
-    private void Construct(UICompanentsFactory companentsFactory, QuestionsConfig question) {
+    private void Construct(UICompanentsFactory companentsFactory) {
         _factory = companentsFactory;
-        _question = question;
     }
 
-    public void Init() {
-        CreateCells();
+    public void Init(DrawingData drawingData) {
+        _drawingData = drawingData;
 
-        FillingCells();
+        var pixels = GetPixelsFromPNG(_drawingData.Texture);
+        CreateCells(pixels);
+        ActivateCells();
 
-        //_activeCell = _cells.FirstOrDefault(cell => cell.Position == Vector2.one);
-        //_activeCell.SetState(CellStates.Active);
+        _emptyCells = DisableRandomCells(10);
+
+        _activeCell = _emptyCells[0];
+        _activeCell.SetState(CellStates.Active);
     }
 
-    private void FillingCells() {
-        foreach (var iEquation in _question.Equations) {
-            var x = iEquation.Multipliable;
-            var y = iEquation.Multiplier;
+    private List<Cell> DisableRandomCells(int count) {
+        List<Cell> emptyCells = new List<Cell>();
 
-            Cell cell = _cells.Find(cell => cell.Position.x == x && cell.Position.y == y);
-            cell.SetState(CellStates.Fill, iEquation.BaseColor);
+        while (emptyCells.Count < count) {
+            int randomIndex = UnityEngine.Random.Range(0, _cells.Count);
+            Cell randomCell = _cells[randomIndex];
+
+            if (emptyCells.Contains(randomCell) == false) {
+                randomCell.SetState(CellStates.Empty);
+                emptyCells.Add(randomCell);
+            } 
         }
+
+        return emptyCells;
     }
 
     public override void RemoveListeners() {
@@ -54,32 +67,56 @@ public class CellsPanel : UIPanel {
         _activeCell.SetState(CellStates.Active);
     }
 
-    public void FillActiveCell(Color color) {
-        _activeCell.SetState(CellStates.Fill, color);
+    public void FillActiveCell() {
+        _activeCell.SetState(CellStates.Fill);
     }
-
-    private void CreateCells() {
+    
+    private void CreateCells(Color32[] pixels) {
         _cells = new List<Cell>();
+        float size = Mathf.Sqrt(pixels.Length);
+        int pixelIndex = 0;
 
-        for (int row = 0; row < 10; row++) {
-            for (int column = 0; column < 10; column++) {
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
                 CellConfig config = new CellConfig();
 
                 Cell newCell = _factory.Get<Cell>(config, _cellsParent);
-                newCell.Position = new Vector2(column, row);
+                newCell.Init(pixels[pixelIndex], new Vector2(column, row));
                 newCell.Selected += OnCellSelected;
 
-                if (row == 0 && column > 0)
-                    newCell.TextValue = $"{column}";
-                else if (row > 0 && column == 0)
-                    newCell.TextValue = $"{row}";
-                else if (row > 0 && column > 0) {
-                    newCell.SetState(CellStates.Empty);
-                }
-                    
+                pixelIndex++;
+
                 _cells.Add(newCell);
             }
         }
+    }
+    
+    private void ActivateCells() {
+        foreach (var iCell in _cells) {
+            iCell.SetState(CellStates.Fill);
+        }
+    }
+
+    private Color32[] GetPixelsFromPNG(Texture2D png) {
+        string assetPath = AssetDatabase.GetAssetPath(png);
+
+        Texture2D texture = new Texture2D(2, 2);
+        byte[] bytes = File.ReadAllBytes(assetPath);
+        texture.LoadImage(bytes);
+        
+        return texture.GetPixels32();
+    }
+
+    private Dictionary<Color, int> GetColorsFromPNG() {
+          var colors = new Dictionary<Color, int>();
+        for (int i = 0; i < _pixels.Length; i++) {
+            if (!colors.ContainsKey(_pixels[i]))
+                colors.Add(_pixels[i], 1);
+            else
+                colors[_pixels[i]]++;
+        }
+
+        return colors;
     }
 
     private void OnCellSelected(Cell activeCell) {
@@ -136,17 +173,4 @@ public class CellsPanel : UIPanel {
 
     }
     
-    private EquationData GetQuestionData(int multipliable, int multiplier) {
-        var multipliables = _question.Equations.Where(data => data.Multipliable == multipliable);
-
-        if (multipliables.Count() > 0) {
-            EquationData data = multipliables.First(data => data.Multiplier == multiplier);
-            
-            if (data != null)
-                return data;
-        }
-
-        return null;
-
-    }
 }

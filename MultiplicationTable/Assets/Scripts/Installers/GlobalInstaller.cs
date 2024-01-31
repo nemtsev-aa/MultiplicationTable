@@ -7,10 +7,12 @@ public class GlobalInstaller : MonoInstaller {
     [SerializeField] private ModsConfig _modsConfig;
     [SerializeField] private LevelsConfig _levelsConfig;
     [SerializeField] private QuestionsConfig _questionsConfig;
+    [SerializeField] private DrawingsConfig _drawingsConfig;
 
     public override void InstallBindings() {
         BuildModsConfig();
         BuildQuestionsConfig();
+        BuildDrawingsConfig();
         BuildLevelsConfig();
         BindUICompanentsConfig();
         BindFactories();
@@ -28,6 +30,13 @@ public class GlobalInstaller : MonoInstaller {
             Debug.LogError($"List of QuestionsConfig is empty");
 
         Container.Bind<QuestionsConfig>().FromInstance(_questionsConfig).AsSingle();
+    }
+
+    private void BuildDrawingsConfig() {
+        if (_drawingsConfig.Drawings.Count == 0)
+            Debug.LogError($"List of DrawingsConfig is empty");
+
+        Container.Bind<DrawingsConfig>().FromInstance(_drawingsConfig).AsSingle();
     }
 
     private void BuildLevelsConfig() {

@@ -12,6 +12,8 @@ public class DialogMediator : IDisposable {
     private SettingsDialog _settingsDialog;
     private HistoryDialog _historyDialog;
 
+    private DrawingByMultiplicationDialog _drawingDialog;
+
     private DialogSwitcher _dialogSwitcher;
     private List<Dialog> _dialogs;
 
@@ -33,13 +35,16 @@ public class DialogMediator : IDisposable {
         _settingsDialog = _uIManager.GetDialogByType(DialogTypes.Settings).GetComponent<SettingsDialog>();
         _historyDialog = _uIManager.GetDialogByType(DialogTypes.History).GetComponent<HistoryDialog>();
 
+        _drawingDialog = _uIManager.GetDialogByType(DialogTypes.DrawingByMultiplication).GetComponent<DrawingByMultiplicationDialog>();
+
         _dialogs = new List<Dialog>() {
             _mainMenuDialog,
             _learningModeDialog,
             _trainingModeDialog,
             _examModeDialog,
             _settingsDialog,
-            _historyDialog
+            _historyDialog,
+            _drawingDialog
         };
     }
 
@@ -53,6 +58,7 @@ public class DialogMediator : IDisposable {
         }
 
         SubscribeToMainMenuDialogActions();
+        SubscribeToTrainingDialogActions();
     }
 
     private void RemoveListeners() {
@@ -64,6 +70,7 @@ public class DialogMediator : IDisposable {
         }
 
         UnsubscribeToMainMenuDialogActions();
+        UnsubscribeToTrainingDialogActions();
     }
 
     private void OnBackClicked() => _dialogSwitcher.ShowDialog(DialogTypes.MainMenu);
@@ -80,7 +87,6 @@ public class DialogMediator : IDisposable {
         _mainMenuDialog.ApplicationModeSelected += OnApplicationModeSelected;
     }
 
-
     private void UnsubscribeToMainMenuDialogActions() {
         _mainMenuDialog.ApplicationModeSelected -= OnApplicationModeSelected;
     }
@@ -92,7 +98,7 @@ public class DialogMediator : IDisposable {
                 break;
 
             case ModeTypes.Training:
-                _dialogSwitcher.ShowDialog(DialogTypes.DrawingByMultiplication);
+                _dialogSwitcher.ShowDialog(DialogTypes.TrainingMode);
                 break;
 
             case ModeTypes.Exam:
@@ -104,6 +110,48 @@ public class DialogMediator : IDisposable {
         }
     }
 
+    #endregion
+
+    #region TrainingModeActions
+    private void SubscribeToTrainingDialogActions() {
+        _trainingModeDialog.TrainingGameStarted += OnTrainingGameStarted;
+    }
+
+    private void UnsubscribeToTrainingDialogActions() {
+        _trainingModeDialog.TrainingGameStarted -= OnTrainingGameStarted;
+    }
+
+    private void OnTrainingGameStarted(TrainingGameData data) {
+        _trainingModeDialog.Show(false);
+
+        switch (data.GameType) {
+            case TrainingGameTypes.TimePressure:
+
+                break;
+
+            case TrainingGameTypes.Survival:
+
+                break;
+
+            case TrainingGameTypes.Drawing:
+                _drawingDialog.SetTrainingGameData(data);
+                _drawingDialog.Show(true);
+
+                break;
+
+            case TrainingGameTypes.Puzzles:
+
+                break;
+
+            case TrainingGameTypes.Accordance:
+
+                break;
+
+            default:
+
+                break;
+        }
+    }
     #endregion
 
     public void Dispose() {

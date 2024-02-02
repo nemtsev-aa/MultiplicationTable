@@ -6,17 +6,17 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class DifficultyLevelPanel : UIPanel {
-    public event Action<DifficultyLevelData> DifficultyLevelSelected;
+    public event Action<DifficultyLevelTypes> DifficultyLevelSelected;
 
     [SerializeField] private RectTransform _selectorsParent;
     [SerializeField] private ToggleGroup _toggleGroup;
 
     private UICompanentsFactory _factory;
-    private LevelsConfig _levelsConfig;
+    private DifficultyLevelsConfig _levelsConfig;
     private List<DifficultyLevelSelector> _selectors = new List<DifficultyLevelSelector>();
 
     [Inject]
-    private void Construct(UICompanentsFactory companentsFactory, LevelsConfig levelsConfig) {
+    private void Construct(UICompanentsFactory companentsFactory, DifficultyLevelsConfig levelsConfig) {
         _factory = companentsFactory;
         _levelsConfig = levelsConfig;
     }
@@ -45,10 +45,8 @@ public class DifficultyLevelPanel : UIPanel {
         }
     }
 
-    private void OnSelected(DifficultyLevelSelectorConfig config) {
-        var selectedDifficultyLevel = _levelsConfig.Configs.FirstOrDefault(data => data.Type == config.Type);
-        
-        DifficultyLevelSelected?.Invoke(selectedDifficultyLevel);
+    private void OnSelected(DifficultyLevelTypes type) { 
+        DifficultyLevelSelected?.Invoke(type);
     }
 
     //(EnemyType) UnityEngine.Random.Range(0, Enum.GetValues(typeof(EnemyType)).Length)

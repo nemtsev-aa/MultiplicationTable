@@ -10,7 +10,7 @@ public enum MultiplierSelectorStatus {
 }
 
 public class MultiplierSelector : UICompanent {
-    public event Action<int> MultiplierSelected;
+    public event Action<int, bool> MultiplierStatusChanged;
 
     [SerializeField] private Toggle _toggle;
     [SerializeField] private TextMeshProUGUI _label;
@@ -26,10 +26,12 @@ public class MultiplierSelector : UICompanent {
     private int _index;
     private MultiplierSelectorStatus _status;
     
-    public void Int(MultiplierButtonConfig config, ToggleGroup group) {
+    public void Int(MultiplierButtonConfig config, ToggleGroup group = null) {
         _index = config.Index;
         _status = config.Status;
-        _toggle.group = group;
+
+        if (group != null) 
+            _toggle.group = group;
 
         SetColors();
         FillingInComponents();
@@ -74,11 +76,13 @@ public class MultiplierSelector : UICompanent {
     }
 
     private void ToggleClick(bool status) {
-        if (status) {
+        if (status)
             _label.color = _text—olorSelectedToggle;
-            MultiplierSelected?.Invoke(_index);
-        }
-        else
+        else {
             _label.color = _text—olorDeselectedToggle;
+        }
+            
+        
+        MultiplierStatusChanged?.Invoke(_index, status);
     }
 }

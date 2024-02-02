@@ -3,13 +3,14 @@ using UnityEngine;
 
 [Serializable]
 public class EquationData {
-    [field: SerializeField] public int Multipliable { get; private set; }
-    [field: SerializeField] public int Result { get; private set; }
-    [field: SerializeField] public Color BaseColor { get; private set; }
-
-    public int Multiplier {
-        get {
-            return (int)(Result / Multipliable);
-        }
+    public EquationData(int multipliable, int multiplier) {
+        Multipliable = multipliable;
+        Multiplier = multiplier;
     }
+    
+    [field: SerializeField] public int Multipliable { get; private set; }
+    [field: SerializeField] public int Multiplier { get; private set; }
+    [field: SerializeField] public Color BaseColor { get; set; }
+
+    public int Result { get { return Multipliable * Multiplier; } }
 }

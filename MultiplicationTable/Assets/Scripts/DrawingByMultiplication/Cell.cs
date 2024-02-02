@@ -30,9 +30,10 @@ public class Cell : UICompanent, IPointerDownHandler {
     private Vector2 _position;
     private string _textValue;
 
-    public CellStates CurrentState { get; private set; } = CellStates.Empty;
-
+    public Color FillStateColor => _fillConfig.Color;
     public Vector2 Position => transform.position;
+    public CellStates CurrentState { get; private set; } = CellStates.Empty;
+ 
     
     public void Init(Color color, Vector2 position) {
         _fillConfig = new CellStateConfig(_emptyConfig.Sprite, color);

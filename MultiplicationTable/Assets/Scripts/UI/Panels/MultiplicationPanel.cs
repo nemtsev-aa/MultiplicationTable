@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Zenject;
 
 public class MultiplicationPanel : UIPanel {
-    public event Action<int> MultiplierSelected;
+    public event Action<List<int>> MultiplierSelected;
 
     [SerializeField] private RectTransform _parent;
     [SerializeField] private ToggleGroup _toggleGroup;
@@ -15,6 +15,7 @@ public class MultiplicationPanel : UIPanel {
 
     private UICompanentsFactory _factory;
     private List<MultiplierSelector> _selectors = new List<MultiplierSelector>();
+    private List<int> _activeSelectors = new List<int>();
 
     [Inject]
     private void Construct(UICompanentsFactory companentsFactory) {
@@ -29,7 +30,7 @@ public class MultiplicationPanel : UIPanel {
         base.RemoveListeners();
 
         foreach (var iSelector in _selectors) {
-            iSelector.MultiplierSelected -= OnMultiplierSelected;
+            iSelector.MultiplierStatusChanged -= OnMultiplierStatusChanged;
         }
     }
 
@@ -39,14 +40,23 @@ public class MultiplicationPanel : UIPanel {
 
             MultiplierSelector newSelector = _factory.Get<MultiplierSelector>(config, _parent);
             newSelector.Int(config, _toggleGroup);
-            newSelector.MultiplierSelected += OnMultiplierSelected;
+            newSelector.MultiplierStatusChanged += OnMultiplierStatusChanged;
             _selectors.Add(newSelector);
             
             _startValue++;
         }
     }
 
-    private void OnMultiplierSelected(int level) {
-        MultiplierSelected?.Invoke(level);
+    private void OnMultiplierStatusChanged(int multiplier, bool status) {
+        if (status) {
+            if (_activeSelectors.Contains(multiplier) == false)
+                _activeSelectors.Add(multiplier);
+        }
+        else {
+            if (_activeSelectors.Contains(multiplier))
+                _activeSelectors.Remove(multiplier);
+        }
+
+        MultiplierSelected?.Invoke(_activeSelectors);
     }
 }

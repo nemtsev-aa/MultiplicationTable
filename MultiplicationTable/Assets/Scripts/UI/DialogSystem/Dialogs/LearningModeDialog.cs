@@ -1,12 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LearningModeDialog : Dialog {
     private MultiplicationPanel _multiplicationPanel;
 
-    private int _currentMultiplier;
-    public int Multiplier => _currentMultiplier;
+    private List<int> _currentMultipliers;
+    public List<int> Multipliers => _currentMultipliers;
+    
     public override void InitializationPanels() {
         base.InitializationPanels();
 
@@ -26,9 +26,9 @@ public class LearningModeDialog : Dialog {
         _multiplicationPanel.MultiplierSelected -= OnMultiplierSelected;
     }
 
-    private void OnMultiplierSelected(int multiplier) {
-        _currentMultiplier = multiplier;
+    private void OnMultiplierSelected(List<int> multipliers) {
+        _currentMultipliers = multipliers;
 
-        Debug.Log($"Selection Multiplier: {_currentMultiplier}");
+        Debug.Log($"Selection Multiplier: {_currentMultipliers}");
     }
 }

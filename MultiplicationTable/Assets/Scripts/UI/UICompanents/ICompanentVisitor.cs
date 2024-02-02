@@ -5,5 +5,6 @@ public interface ICompanentVisitor {
     void Visit(DifficultyLevelSelectorConfig difficultyLevelSelector);
     void Visit(NumberViewConfig numberViewConfig);
     void Visit(CellConfig cellConfig);
+    void Visit(TrainingGameSelectorConfig gameSelectorConfig);
  
 }

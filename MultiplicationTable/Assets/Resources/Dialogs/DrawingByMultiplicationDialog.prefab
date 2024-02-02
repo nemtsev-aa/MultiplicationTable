@@ -84,6 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cellsParent: {fileID: 1737161000460274902}
+  _emptyCells: []
 --- !u!222 &7796680868114147243
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -881,7 +882,6 @@ MonoBehaviour:
   HistoryButton: {fileID: 1737161000668808507}
   Panels:
   - {fileID: 1737160999135503967}
-  - {fileID: 0}
   - {fileID: 1737160999754612736}
   - {fileID: 2415790759610658693}
 --- !u!1 &1737161000658878652

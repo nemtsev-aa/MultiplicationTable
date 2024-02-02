@@ -8,6 +8,7 @@ using System.IO;
 
 public class CellsPanel : UIPanel {
     public event Action<Cell> ActiveCellChanged;
+    public event Action<int> EmptyCellsCountChanged;
 
     [SerializeField] private RectTransform _cellsParent;
     [SerializeField] private List<Cell> _emptyCells;
@@ -23,33 +24,17 @@ public class CellsPanel : UIPanel {
         _factory = companentsFactory;
     }
 
-    public void Init(DrawingData drawingData) {
+    public void Init(DrawingData drawingData, int equationCount) {
         _drawingData = drawingData;
 
         var pixels = GetPixelsFromPNG(_drawingData.Texture);
         CreateCells(pixels);
         ActivateCells();
 
-        _emptyCells = DisableRandomCells(10);
+        _emptyCells = DisableRandomCells(equationCount);
 
         _activeCell = _emptyCells[0];
         _activeCell.SetState(CellStates.Active);
-    }
-
-    private List<Cell> DisableRandomCells(int count) {
-        List<Cell> emptyCells = new List<Cell>();
-
-        while (emptyCells.Count < count) {
-            int randomIndex = UnityEngine.Random.Range(0, _cells.Count);
-            Cell randomCell = _cells[randomIndex];
-
-            if (emptyCells.Contains(randomCell) == false) {
-                randomCell.SetState(CellStates.Empty);
-                emptyCells.Add(randomCell);
-            } 
-        }
-
-        return emptyCells;
     }
 
     public override void RemoveListeners() {
@@ -60,17 +45,13 @@ public class CellsPanel : UIPanel {
         }
     }
 
-    public void GetActiveCell(OffsetDirections direction) {
-        _activeCell.SetState(CellStates.Empty);
-
-        SwitchActiveCell(direction);
-        _activeCell.SetState(CellStates.Active);
-    }
-
     public void FillActiveCell() {
         _activeCell.SetState(CellStates.Fill);
+        _emptyCells.Remove(_activeCell);
+
+        SwitchActiveCell();
     }
-    
+        
     private void CreateCells(Color32[] pixels) {
         _cells = new List<Cell>();
         float size = Mathf.Sqrt(pixels.Length);
@@ -91,6 +72,22 @@ public class CellsPanel : UIPanel {
         }
     }
     
+    private List<Cell> DisableRandomCells(int count) {
+        List<Cell> emptyCells = new List<Cell>();
+
+        while (emptyCells.Count < count) {
+            int randomIndex = UnityEngine.Random.Range(0, _cells.Count);
+            Cell randomCell = _cells[randomIndex];
+
+            if (emptyCells.Contains(randomCell) == false) {
+                randomCell.SetState(CellStates.Empty);
+                emptyCells.Add(randomCell);
+            }
+        }
+
+        return emptyCells;
+    }
+
     private void ActivateCells() {
         foreach (var iCell in _cells) {
             iCell.SetState(CellStates.Fill);
@@ -173,4 +170,13 @@ public class CellsPanel : UIPanel {
 
     }
     
+    private void SwitchActiveCell() {
+        if (_emptyCells.Count >= 0) {
+            _activeCell = _emptyCells[0];
+            _activeCell.SetState(CellStates.Active);
+        }
+
+        EmptyCellsCountChanged?.Invoke(_emptyCells.Count);
+    }
+
 }

@@ -196,7 +196,7 @@ MonoBehaviour:
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 200}
   m_Spacing: {x: 20, y: 20}
-  m_Constraint: 1
+  m_Constraint: 0
   m_ConstraintCount: 4
 --- !u!114 &7305330909763471505
 MonoBehaviour:
@@ -263,6 +263,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parent: {fileID: 496516109531045255}
-  _toggleGroup: {fileID: 7305330909763471505}
+  _toggleGroup: {fileID: 0}
   _startValue: 2
   _buttonCount: 10

@@ -77,6 +77,9 @@ MonoBehaviour:
   _uiCompanentPrefabs: {fileID: 11400000, guid: 02ccee1f9f0dfd84395d71fbc22803be,
     type: 2}
   _modsConfig: {fileID: 11400000, guid: c37034d5d68c543489de04e4c1c2df5f, type: 2}
-  _levelsConfig: {fileID: 11400000, guid: 5e53a27dd500a1a42b4ef2a2968e7a02, type: 2}
+  _difficultyLevelsConfig: {fileID: 11400000, guid: 1acd9eb6e9bcbeb439cd672a91874ab2,
+    type: 2}
   _questionsConfig: {fileID: 11400000, guid: 20175eb09cdde8e47919d8ca5e9db137, type: 2}
   _drawingsConfig: {fileID: 11400000, guid: 1fc4a669261461f42b082727c3b72edd, type: 2}
+  _trainingGameConfigs: {fileID: 11400000, guid: 2743f502982b79c4fa177cb9b625e06b,
+    type: 2}

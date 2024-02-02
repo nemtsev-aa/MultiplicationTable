@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class DifficultyLevelSelector : UICompanent {
-    public event Action<DifficultyLevelSelectorConfig> Selected;
+    public event Action<DifficultyLevelTypes> Selected;
 
     [SerializeField] private TextMeshProUGUI _toggleName;
     [SerializeField] private Toggle _toggle;
@@ -36,7 +36,7 @@ public class DifficultyLevelSelector : UICompanent {
     private void SelectorClick(bool status) {
         if (status) {
             _toggleName.color = _text—olorSelectedToggle;
-            Selected?.Invoke(_config);
+            Selected?.Invoke(_config.Type);
         }
         else
             _toggleName.color = _text—olorDeselectedToggle;

@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 649b4e6dcb5e2584fac64e7a76225f71, type: 3}
-  m_Name: LevelsConfig
+  m_Script: {fileID: 11500000, guid: 3bad9aadb8cf3cb4d80df319f7aeaf3a, type: 3}
+  m_Name: DifficultyLevelsConfig
   m_EditorClassIdentifier: 
   <Configs>k__BackingField:
   - <Type>k__BackingField: 0
-    <Name>k__BackingField: "\u041F\u0440\u043E\u0441\u0442\u043E"
+    <Name>k__BackingField: "\u041B\u0435\u0433\u043A\u043E"
     <TimeDuration>k__BackingField: 20
   - <Type>k__BackingField: 1
     <Name>k__BackingField: "\u0421\u0440\u0435\u0434\u043D\u0435"

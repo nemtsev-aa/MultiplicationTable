@@ -27,5 +27,6 @@ public class UICompanentVisitor : ICompanentVisitor {
     public void Visit(CellConfig cellConfig) 
         => Companent = _companents.FirstOrDefault(companent => companent is Cell);
 
-    
+    public void Visit(TrainingGameSelectorConfig gameSelectorConfig)
+        => Companent = _companents.FirstOrDefault(companent => companent is TrainingGameSelector);
 }

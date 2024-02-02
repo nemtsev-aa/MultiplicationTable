@@ -1,4 +1,4 @@
-public enum DifficultyLevelsTypes {
+public enum DifficultyLevelTypes {
     Easy,
     Averagå,
     Hard,

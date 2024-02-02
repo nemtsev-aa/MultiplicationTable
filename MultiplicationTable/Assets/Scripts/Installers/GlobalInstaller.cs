@@ -1,19 +1,20 @@
-using System;
 using UnityEngine;
 using Zenject;
 
 public class GlobalInstaller : MonoInstaller {
     [SerializeField] private UICompanentPrefabs _uiCompanentPrefabs;
     [SerializeField] private ModsConfig _modsConfig;
-    [SerializeField] private LevelsConfig _levelsConfig;
+    [SerializeField] private DifficultyLevelsConfig _difficultyLevelsConfig;
     [SerializeField] private QuestionsConfig _questionsConfig;
     [SerializeField] private DrawingsConfig _drawingsConfig;
+    [SerializeField] private TrainingGameConfigs _trainingGameConfigs;
 
     public override void InstallBindings() {
         BuildModsConfig();
         BuildQuestionsConfig();
         BuildDrawingsConfig();
-        BuildLevelsConfig();
+        BuildDifficultyLevelsConfig();
+        BuildTrainingGameConfigs();
         BindUICompanentsConfig();
         BindFactories();
     }
@@ -39,15 +40,23 @@ public class GlobalInstaller : MonoInstaller {
         Container.Bind<DrawingsConfig>().FromInstance(_drawingsConfig).AsSingle();
     }
 
-    private void BuildLevelsConfig() {
-        if (_levelsConfig.Configs.Count == 0)
-            Debug.LogError($"List of LevelsConfig is empty");
+    private void BuildDifficultyLevelsConfig() {
+        if (_difficultyLevelsConfig.Configs.Count == 0)
+            Debug.LogError($"List of DifficultyLevelsConfig is empty");
 
-        Container.Bind<LevelsConfig>().FromInstance(_levelsConfig).AsSingle();
+        Container.Bind<DifficultyLevelsConfig>().FromInstance(_difficultyLevelsConfig).AsSingle();
+        Container.BindInstance(new EquationFactory(_difficultyLevelsConfig));
+    }
+
+    private void BuildTrainingGameConfigs() {
+        if (_trainingGameConfigs.Configs.Count == 0)
+            Debug.LogError($"List of TrainingGameConfigs is empty");
+
+        Container.Bind<TrainingGameConfigs>().FromInstance(_trainingGameConfigs).AsSingle();
     }
 
     private void BindUICompanentsConfig() {
-        if (_uiCompanentPrefabs.Prefabs.Count == 0) 
+        if (_uiCompanentPrefabs.Prefabs.Count == 0)
             Debug.LogError($"List of UICompanentPrefabs is empty");
 
         Container.Bind<UICompanentPrefabs>().FromInstance(_uiCompanentPrefabs).AsSingle();

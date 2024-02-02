@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using UnityEditor;
 using System.IO;
+using DG.Tweening;
 
 public class CellsPanel : UIPanel {
     public event Action<Cell> ActiveCellChanged;
@@ -14,10 +15,12 @@ public class CellsPanel : UIPanel {
     [SerializeField] private List<Cell> _emptyCells;
 
     private List<Cell> _cells;
-    private Cell _activeCell;
+    
     private UICompanentsFactory _factory;
     private DrawingData _drawingData;
     private Color32[] _pixels;
+
+    public Cell ActiveCell { get; private set; }
 
     [Inject]
     private void Construct(UICompanentsFactory companentsFactory) {
@@ -29,12 +32,12 @@ public class CellsPanel : UIPanel {
 
         var pixels = GetPixelsFromPNG(_drawingData.Texture);
         CreateCells(pixels);
-        ActivateCells();
+        FillAllCells();
 
-        _emptyCells = DisableRandomCells(equationCount);
+        _emptyCells = GetRandomCells(equationCount);
+        DisableRandonCells();
 
-        _activeCell = _emptyCells[0];
-        _activeCell.SetState(CellStates.Active);
+        OnCellSelected(_emptyCells[0]);
     }
 
     public override void RemoveListeners() {
@@ -46,10 +49,9 @@ public class CellsPanel : UIPanel {
     }
 
     public void FillActiveCell() {
-        _activeCell.SetState(CellStates.Fill);
-        _emptyCells.Remove(_activeCell);
-
-        SwitchActiveCell();
+        ActiveCell.SwitchState(CellStates.Fill);
+        
+        SwitchActiveCell();           
     }
         
     private void CreateCells(Color32[] pixels) {
@@ -72,15 +74,17 @@ public class CellsPanel : UIPanel {
         }
     }
     
-    private List<Cell> DisableRandomCells(int count) {
+    private List<Cell> GetRandomCells(int count) {
         List<Cell> emptyCells = new List<Cell>();
 
         while (emptyCells.Count < count) {
             int randomIndex = UnityEngine.Random.Range(0, _cells.Count);
             Cell randomCell = _cells[randomIndex];
 
+            if (randomCell.FillStateColor == Color.white)
+                continue;
+
             if (emptyCells.Contains(randomCell) == false) {
-                randomCell.SetState(CellStates.Empty);
                 emptyCells.Add(randomCell);
             }
         }
@@ -88,9 +92,19 @@ public class CellsPanel : UIPanel {
         return emptyCells;
     }
 
-    private void ActivateCells() {
-        foreach (var iCell in _cells) {
-            iCell.SetState(CellStates.Fill);
+    private void DisableRandonCells() {
+        for (int i = 0; i < _emptyCells.Count; i++) {
+            _emptyCells[i].SwitchState(CellStates.Empty);
+        }
+    }
+
+    [ContextMenu(nameof(FillAllCells))]
+    private void FillAllCells() {
+        float timeDuration = 0.01f;
+
+        for (int i = 0; i < _cells.Count; i++) {
+            Cell iCell = _cells[i];
+            ShowFillAnimation(iCell, timeDuration * i);
         }
     }
 
@@ -117,20 +131,29 @@ public class CellsPanel : UIPanel {
     }
 
     private void OnCellSelected(Cell activeCell) {
-        if (activeCell.Position.x == 0 || activeCell.Position.y == 0) 
+        if (activeCell.Equals(ActiveCell) == true) 
             return;
+
+        if (ActiveCell != null && ActiveCell.CurrentState != CellStates.Fill)
+            ActiveCell.SwitchState(CellStates.Empty);
+
+        ActiveCell = activeCell;
+        ActiveCell.SwitchState(CellStates.Active);
+        ActiveCellChanged?.Invoke(ActiveCell);
+    }
+
+    private void SwitchActiveCell() {
+        _emptyCells.Remove(ActiveCell);
+
+        if (_emptyCells.Count > 0) 
+            OnCellSelected(_emptyCells[0]);
         
-        _activeCell.SetState(CellStates.Empty);
-
-        _activeCell = activeCell;
-        _activeCell.SetState(CellStates.Active);
-
-        ActiveCellChanged?.Invoke(_activeCell);
+        EmptyCellsCountChanged?.Invoke(_emptyCells.Count);
     }
 
     private void SwitchActiveCell(OffsetDirections offsetDirection) {
-        float row = _activeCell.Position.y;
-        float column = _activeCell.Position.x; 
+        float row = ActiveCell.Position.y;
+        float column = ActiveCell.Position.x; 
 
         switch (offsetDirection) {
             case OffsetDirections.Left:
@@ -166,17 +189,17 @@ public class CellsPanel : UIPanel {
         }
 
         var columnCells = _cells.Where(cell => cell.Position.x == column);
-        _activeCell = columnCells.First(cell => cell.Position.y == row);
+        ActiveCell = columnCells.First(cell => cell.Position.y == row);
 
     }
-    
-    private void SwitchActiveCell() {
-        if (_emptyCells.Count >= 0) {
-            _activeCell = _emptyCells[0];
-            _activeCell.SetState(CellStates.Active);
-        }
 
-        EmptyCellsCountChanged?.Invoke(_emptyCells.Count);
+    private void ShowFillAnimation(Cell cell, float timeOffset) {
+        float duration = 0.3f;
+        float fadeValue = Mathf.PerlinNoise(cell.Position.x, cell.Position.y);
+
+        var s = DOTween.Sequence();
+        
+        s.Append(cell.Background.DOFade(fadeValue, duration));
+        s.Insert(timeOffset, cell.Background.DOFade(1f, duration));
     }
-
 }

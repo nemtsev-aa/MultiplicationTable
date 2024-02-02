@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class EquationView : UICompanent {
+    public const string MultiplierDefaultText = "?";
     public event Action NumberInputStatusChanged;
 
     [SerializeField] private Button _numberInputButton;
@@ -37,6 +38,7 @@ public class EquationView : UICompanent {
 
     private void FillingCompanents() {
         _multipliableText.text = $"{_data.Multipliable}";
+        _multiplierText.text = $"{MultiplierDefaultText}";
         _resultText.text = $"{_data.Result}";
         _backgroundColor.color = _data.BaseColor;
     }

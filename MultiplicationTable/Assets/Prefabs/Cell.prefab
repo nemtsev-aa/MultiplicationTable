@@ -64,10 +64,12 @@ MonoBehaviour:
     <Color>k__BackingField: {r: 1, g: 0, b: 0.7468691, a: 1}
     <Sprite>k__BackingField: {fileID: 21300000, guid: dae719cc6ae5b4091b66fa23139b23be,
       type: 3}
+    <Text>k__BackingField: '?'
   _activeConfig:
     <Color>k__BackingField: {r: 0.040607214, g: 1, b: 0, a: 1}
     <Sprite>k__BackingField: {fileID: 21300000, guid: e5343799bfa9e4e4c9edf6b3b99c0eb5,
       type: 3}
+    <Text>k__BackingField: '!'
   _background: {fileID: 5947829996023202441}
   _textLabel: {fileID: 4474310057434679072}
 --- !u!1 &5896228831631020671

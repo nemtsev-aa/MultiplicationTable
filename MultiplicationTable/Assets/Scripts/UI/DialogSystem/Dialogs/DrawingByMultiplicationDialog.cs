@@ -1,17 +1,22 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
 public class DrawingByMultiplicationDialog : Dialog {
+    public event Action AllEmptyCellsFilled;
+
     private CellsPanel _cellsPanel;
     private EquationPanel _equationPanel;
     private MultiplierSelectionPanel _multipliersPanel;
+
     private DrawingsConfig _drawings;
     private EquationFactory _equationFactory;
 
     private List<EquationData> _equations;
     private EquationData _currentEquation;
     private TrainingGameData _data;
+
 
     [Inject]
     private void Construct(DrawingsConfig drawings, EquationFactory equationFactory) {
@@ -24,7 +29,6 @@ public class DrawingByMultiplicationDialog : Dialog {
 
         _equations = _equationFactory.GetEquations(_data.Multipliers, _data.DifficultyLevelType);
         _cellsPanel.Init(GetRandonDrawingData(), _equations.Count);
-        _equationPanel.ShowEquation(_currentEquation);
     }
 
     public override void AddListeners() {
@@ -63,17 +67,22 @@ public class DrawingByMultiplicationDialog : Dialog {
     }
 
     private void OnActiveCellChanged(Cell activeCell) {
-        _currentEquation = _equations[UnityEngine.Random.Range(0, _equations.Count)];
+        //_currentEquation = _equations[UnityEngine.Random.Range(0, _equations.Count)];
+        _currentEquation = _equations[0];
         _currentEquation.BaseColor = activeCell.FillStateColor;
 
         _equationPanel.ShowEquation(_currentEquation);
     }
 
     private void OnEmptyCellsCountChanged(int emptyCellsCount) {
-        if (emptyCellsCount == 0)
+        if (emptyCellsCount == 0) {
+            AllEmptyCellsFilled?.Invoke();
             Debug.Log($"Всe ячейки заполнены!");
-        else
+        }
+        else {
+            OnActiveCellChanged(_cellsPanel.ActiveCell);
             Debug.Log($"Заполнено {emptyCellsCount}/{_equations.Count}!");
+        }
     }
 
     private void OnMultiplierSelected(int multiplier) {
@@ -84,14 +93,12 @@ public class DrawingByMultiplicationDialog : Dialog {
 
     private void QuationVerification(int multiplier) {
         if (multiplier == _currentEquation.Multiplier) {
-            _cellsPanel.FillActiveCell();
-
             _equations.Remove(_currentEquation);
+            _cellsPanel.FillActiveCell(); 
         }
     }
 
     private void OnMultiplierSelectionPanelShowed(bool status)
         => _multipliersPanel.Show(status);
-
 
 }

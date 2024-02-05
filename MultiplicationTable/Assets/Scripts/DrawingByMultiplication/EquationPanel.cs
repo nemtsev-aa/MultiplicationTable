@@ -3,14 +3,19 @@ using UnityEngine;
 
 public class EquationPanel : UIPanel {
     public event Action<bool> MultiplierSelectionPanelShowed;
+    public event Action<bool> EquationVerificatedChanged;
+    public event Action<float> EquationsCountChanged;
 
     [SerializeField] private EquationView _equationView;
-
+    [SerializeField] private EquationCountBar _equationCountBar;
+    
     private EquationData _data;
     private bool _isSelect = false;
 
-    public void Init() {
+    public void Init(int count) {
         AddListeners();
+
+        _equationCountBar.Init(this, count);
     }
 
     public override void AddListeners() {
@@ -32,6 +37,7 @@ public class EquationPanel : UIPanel {
         _isSelect = false;
 
         _equationView.Reset();
+        _equationCountBar.Reset(); 
     }
 
     public void ShowEquation(EquationData data) {
@@ -39,7 +45,7 @@ public class EquationPanel : UIPanel {
             _data = data;
 
             var config = new EquationViewConfig(_data);
-            _equationView.Init(config);
+            _equationView.Init(this, config);
         }
     }
 
@@ -48,8 +54,11 @@ public class EquationPanel : UIPanel {
         _equationView.ShowMultiplier($"{multiplier}");
     }
 
-    public void ShowQuationVerificationResult(bool result) {
-        _equationView.ShowQuationVerificationResult(result);
+    public void ShowEquationVerificationResult(bool result, float count) {
+        if (result) 
+            EquationsCountChanged?.Invoke(count);
+
+        EquationVerificatedChanged?.Invoke(result);
     }
 
     private void OnNumberInputStatusChanged() {

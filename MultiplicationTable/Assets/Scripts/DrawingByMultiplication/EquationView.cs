@@ -23,7 +23,7 @@ public class EquationView : UICompanent {
 
     public int Multiplier => _data.Multiplier;
 
-    public void Init(EquationViewConfig config) {
+    public void Init(EquationPanel equationPanel, EquationViewConfig config) {
         _data = config.Data;
 
         CreateSubscribers();

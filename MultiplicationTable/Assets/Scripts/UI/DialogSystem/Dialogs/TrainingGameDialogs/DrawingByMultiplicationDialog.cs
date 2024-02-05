@@ -23,6 +23,7 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
         _cellsPanel.Init(GetRandonDrawingData(), Equations.Count);
+        _equationPanel.Init(Equations.Count);
     }
 
     public override void AddListeners() {
@@ -47,9 +48,7 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         base.InitializationPanels();
 
         _cellsPanel = GetPanelByType<CellsPanel>();
-
         _equationPanel = GetPanelByType<EquationPanel>();
-        _equationPanel.Init();
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
         _multipliersPanel.Init(new MultipliersConfig(Multipliers));
@@ -79,19 +78,20 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
     private void OnMultiplierSelected(int multiplier) {
         _equationPanel.SetMultiplier(multiplier);
 
-        QuationVerification(multiplier);
+        EquationVerification(multiplier);
     }
 
-    private void QuationVerification(int multiplier) {
+    private void EquationVerification(int multiplier) {
         if (multiplier == CurrentEquation.Multiplier) {
             Equations.Remove(CurrentEquation);
-            _equationPanel.ShowQuationVerificationResult(true);
+            _equationPanel.ShowEquationVerificationResult(true, Equations.Count);
 
             _cellsPanel.FillActiveCell();
         }
-        else
-            _equationPanel.ShowQuationVerificationResult(false);
-
+        else {
+            _equationPanel.ShowEquationVerificationResult(false, Equations.Count);
+            // Добавить количество ошибок в результат игры -> история игр
+        }   
     }
 
     private void OnMultiplierSelectionPanelShowed(bool status)

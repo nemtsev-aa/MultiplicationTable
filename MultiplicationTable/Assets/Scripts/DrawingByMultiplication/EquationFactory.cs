@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class EquationFactory {
     private const int MaxEquationCount = 100;
     private List<int> _multipliers = new List<int>() { 2, 3, 4, 5, 6, 7, 8, 9 };
 
     private DifficultyLevelsConfig _difficultyConfig;
+    private DifficultyLevelTypes _difficultyLevel;
+    private List<EquationData> _equations;
 
     public EquationFactory(DifficultyLevelsConfig difficultyConfig) {
         _difficultyConfig = difficultyConfig;
@@ -21,20 +24,25 @@ public class EquationFactory {
     }
 
     private List<EquationData> CreateEquationDataList(List<int> multipliables, DifficultyLevelTypes difficultyLevel) {
-        var equations = new List<EquationData>();
+        _difficultyLevel = difficultyLevel;
+        _equations = new List<EquationData>();
 
         var difficultyLevelData = GetDifficultyLevelDataByType(difficultyLevel);
-        float equationCount = MaxEquationCount / difficultyLevelData.TimeDuration;
+        float equationCount = Mathf.RoundToInt(MaxEquationCount / difficultyLevelData.TimeDuration);
 
-        for (int i = 0; i < equationCount; i++) {
+        while(_equations.Count < equationCount) {
             int multipliable = GetRandomNumberFromList(multipliables);
             int multiplier = GetRandomNumberFromList(_multipliers);
 
             var equation = new EquationData(multipliable, multiplier);
-            equations.Add(equation);
+
+            if (CheckEquationCopyCount(equation, difficultyLevelData.AllowedCopyCount))
+                _equations.Add(equation);
+            else
+                continue;
         }
 
-        return equations;
+        return _equations;
     }
 
     private DifficultyLevelData GetDifficultyLevelDataByType(DifficultyLevelTypes type) {
@@ -46,4 +54,16 @@ public class EquationFactory {
         return numbers[randomIndex];
     }
 
+    private bool CheckEquationCopyCount(EquationData equation, int allowedCopiesCount) {
+
+        var equationCopyCount = _equations.Where(data 
+            => data.Multipliable == equation.Multipliable && 
+            data.Multiplier == equation.Multiplier).Count();
+
+        if (equationCopyCount <= allowedCopiesCount)
+            return true;
+        else
+            return false;
+    }
 }
+

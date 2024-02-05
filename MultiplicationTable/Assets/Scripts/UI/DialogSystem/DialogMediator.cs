@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class DialogMediator : IDisposable {
     private UIManager _uIManager;
@@ -16,6 +17,9 @@ public class DialogMediator : IDisposable {
 
     private DialogSwitcher _dialogSwitcher;
     private List<Dialog> _dialogs;
+
+    private List<TrainingGameDialog> _trainingGameDialogs;
+    private TrainingGameDialog _trainingGameDialog;
 
     public DialogMediator(UIManager uIManager, DialogSwitcher dialogSwitcher) {
         _uIManager = uIManager;
@@ -46,6 +50,14 @@ public class DialogMediator : IDisposable {
             _historyDialog,
             _drawingDialog
         };
+
+        _trainingGameDialogs = new List<TrainingGameDialog>() {
+            _drawingDialog
+        };
+    }
+
+    private TrainingGameDialog GetTrainingGameDialog(TrainingGameTypes type) {
+        return _trainingGameDialogs.FirstOrDefault(dialog => dialog.TrainingGameType == type);
     }
 
     private void AddListeners() {
@@ -73,7 +85,7 @@ public class DialogMediator : IDisposable {
         UnsubscribeToTrainingDialogActions();
     }
 
-    private void OnBackClicked() => _dialogSwitcher.ShowDialog(DialogTypes.MainMenu);
+    private void OnBackClicked() => _dialogSwitcher.ShowPreviousDialog();
 
     private void OnSettingsClicked() => _dialogSwitcher.ShowDialog(DialogTypes.Settings);
 
@@ -115,43 +127,27 @@ public class DialogMediator : IDisposable {
     #region TrainingModeActions
     private void SubscribeToTrainingDialogActions() {
         _trainingModeDialog.TrainingGameStarted += OnTrainingGameStarted;
+        
     }
 
     private void UnsubscribeToTrainingDialogActions() {
         _trainingModeDialog.TrainingGameStarted -= OnTrainingGameStarted;
+        _trainingGameDialog.TrainingGameFinished -= OnTrainingGameFinished;
     }
 
     private void OnTrainingGameStarted(TrainingGameData data) {
-        _trainingModeDialog.Show(false);
+        _trainingGameDialog = GetTrainingGameDialog(data.GameType);
+        _trainingGameDialog.TrainingGameFinished += OnTrainingGameFinished;
 
-        switch (data.GameType) {
-            case TrainingGameTypes.TimePressure:
-
-                break;
-
-            case TrainingGameTypes.Survival:
-
-                break;
-
-            case TrainingGameTypes.Drawing:
-                _drawingDialog.SetTrainingGameData(data);
-                _drawingDialog.Show(true);
-
-                break;
-
-            case TrainingGameTypes.Puzzles:
-
-                break;
-
-            case TrainingGameTypes.Accordance:
-
-                break;
-
-            default:
-
-                break;
-        }
+        _trainingGameDialog.SetTrainingGameData(data);
+        _dialogSwitcher.ShowDialog(DialogTypes.DrawingByMultiplication);
     }
+
+    private void OnTrainingGameFinished(TrainingGameData data) {
+        _trainingGameDialog.TrainingGameFinished -= OnTrainingGameFinished;
+        _dialogSwitcher.ShowDialog(DialogTypes.TrainingMode);
+    }
+
     #endregion
 
     public void Dispose() {

@@ -67,10 +67,14 @@ public class TrainingModeDialog : Dialog {
     }
 
     private void OnStartClick() {
+
         TrainingGameData = new TrainingGameData(ModeTypes.Training, _currentTrainingGameType,
             _currentMultipliers, _currentDifficultyLevelType);
 
-        TrainingGameStarted?.Invoke(TrainingGameData);
+        Logger.Instance.Log($"{TrainingGameData}");
         Debug.Log($"MiniGame Started: {TrainingGameData}");
+
+        TrainingGameStarted?.Invoke(TrainingGameData);
     }
+
 }

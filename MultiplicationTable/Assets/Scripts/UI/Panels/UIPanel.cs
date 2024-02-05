@@ -7,6 +7,10 @@ public abstract class UIPanel : MonoBehaviour, IDisposable {
         gameObject.SetActive(value);
     }
 
+    public virtual void Reset() {
+
+    }
+
     public virtual void UpdateContent() {
 
     }

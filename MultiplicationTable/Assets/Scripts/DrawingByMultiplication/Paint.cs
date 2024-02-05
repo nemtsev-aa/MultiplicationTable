@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -41,17 +42,49 @@ public class Paint : MonoBehaviour {
         _texture.Apply();
     }
 
-    [ContextMenu(nameof(Texture2DToFile))]
-    public void Texture2DToFile() {
-        byte[] bytes = _texture.EncodeToPNG();
-        System.IO.File.WriteAllBytes(_path, bytes);
-        AssetDatabase.ImportAsset(_path);
+    //[ContextMenu(nameof(Texture2DToFile))]
+    //public void Texture2DToFile() {
+    //    byte[] bytes = _texture.EncodeToPNG();
+    //    System.IO.File.WriteAllBytes(_path, bytes);
+    //    AssetDatabase.ImportAsset(_path);
 
-        TextureImporter importer = (TextureImporter)AssetImporter.GetAtPath(_path);
-        importer.isReadable = true;
-        importer.filterMode = FilterMode.Point;
+    //    TextureImporter importer = (TextureImporter)AssetImporter.GetAtPath(_path);
+    //    importer.isReadable = true;
+    //    importer.filterMode = FilterMode.Point;
 
-        Debug.Log("Saved to " + _path);
+    //    Debug.Log("Saved to " + _path);
+    //}
+
+    [ContextMenu(nameof(SaveTexture2DToFile))]
+    void SaveTexture2DToFile() {
+        string fromPath = Path.Combine($"{Application.dataPath}/Resources", "Paint.png");
+        using (FileStream fs = new FileStream(fromPath, FileMode.Create)) {
+            using (BinaryWriter writer = new BinaryWriter(fs)) {
+                var bytes = _texture.EncodeToPNG();
+                writer.Write(bytes);
+                writer.Close();
+            }
+        }
+
+        Debug.Log($"Save to: {fromPath}");
+    }
+
+    [ContextMenu(nameof(LoadImage))]
+    private void LoadImage() {
+
+        byte[] imgData;
+        
+        try {
+            imgData = File.ReadAllBytes(Path.Combine($"{Application.dataPath}/Resources", "Paint.png"));
+        }
+        catch (FileNotFoundException) {
+            return;
+        }
+
+        Texture2D texture = new Texture2D(2, 2);
+        texture.LoadImage(imgData);
+
+        Color32[] colors = texture.GetPixels32();
     }
 
     [ContextMenu(nameof(ImportTextureFromPNG))]

@@ -35,8 +35,7 @@ public class Cell : UICompanent, IPointerDownHandler {
     private Color _startColor;
     private Color _endColor = Color.white;
     private Tween _colorTween;
-    private Tween _scaleTween;
-
+  
     public Image Background => _background;
     public Color FillStateColor => _fillConfig.Color;
     public Vector2 Position => transform.position;

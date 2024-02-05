@@ -1,13 +1,17 @@
+using DG.Tweening;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using Zenject;
-using System;
-using System.Linq;
-using UnityEditor;
-using System.IO;
-using DG.Tweening;
 
 public class CellsPanel : UIPanel {
+    private const string LargeConfig = "LargeConfig";
+    private const string ConfigsPath = "EnemyConfigs";
+
+    public const float DelaySwitchingActiveCell = 1f;
+
     public event Action<Cell> ActiveCellChanged;
     public event Action<int> EmptyCellsCountChanged;
 
@@ -15,7 +19,7 @@ public class CellsPanel : UIPanel {
     [SerializeField] private List<Cell> _emptyCells;
 
     private List<Cell> _cells;
-    
+
     private UICompanentsFactory _factory;
     private DrawingData _drawingData;
     private Color32[] _pixels;
@@ -30,7 +34,7 @@ public class CellsPanel : UIPanel {
     public void Init(DrawingData drawingData, int equationCount) {
         _drawingData = drawingData;
 
-        var pixels = GetPixelsFromPNG(_drawingData.Texture);
+        var pixels = GetPixelsFromPNG();
         CreateCells(pixels);
         FillAllCells();
 
@@ -38,6 +42,19 @@ public class CellsPanel : UIPanel {
         DisableRandonCells();
 
         OnCellSelected(_emptyCells[0]);
+    }
+
+    public override void Reset() {
+        base.Reset();
+
+        _drawingData = null;
+
+        foreach (var iCell in _cells) {
+            iCell.Selected -= OnCellSelected;
+            Destroy(iCell.gameObject);
+        }
+
+        _cells.Clear();
     }
 
     public override void RemoveListeners() {
@@ -50,14 +67,16 @@ public class CellsPanel : UIPanel {
 
     public void FillActiveCell() {
         ActiveCell.SwitchState(CellStates.Fill);
-        
-        SwitchActiveCell();           
+
+        Invoke(nameof(SwitchActiveCell), DelaySwitchingActiveCell);
     }
-        
+
     private void CreateCells(Color32[] pixels) {
         _cells = new List<Cell>();
         float size = Mathf.Sqrt(pixels.Length);
         int pixelIndex = 0;
+
+        Logger.Instance.Log($"CreateCells size value:  {size}");
 
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
@@ -73,7 +92,7 @@ public class CellsPanel : UIPanel {
             }
         }
     }
-    
+
     private List<Cell> GetRandomCells(int count) {
         List<Cell> emptyCells = new List<Cell>();
 
@@ -98,7 +117,6 @@ public class CellsPanel : UIPanel {
         }
     }
 
-    [ContextMenu(nameof(FillAllCells))]
     private void FillAllCells() {
         float timeDuration = 0.01f;
 
@@ -108,18 +126,37 @@ public class CellsPanel : UIPanel {
         }
     }
 
-    private Color32[] GetPixelsFromPNG(Texture2D png) {
-        string assetPath = AssetDatabase.GetAssetPath(png);
+    private Color32[] GetPixelsFromPNG() {
+        ResourcesExtension resourcesExtension = new ResourcesExtension(ResourceType.AnimalTextures);
 
-        Texture2D texture = new Texture2D(2, 2);
-        byte[] bytes = File.ReadAllBytes(assetPath);
-        texture.LoadImage(bytes);
-        
-        return texture.GetPixels32();
+        try {
+            if (SystemInfo.deviceType == DeviceType.Handheld) {
+                Logger.Instance.Log($"GetPixelsFromPNG: Colors Count {resourcesExtension.Test(this).Length}");
+                return resourcesExtension.Test(this);
+            }
+            else
+            {
+                var randomItemPath = resourcesExtension.GetRandomItemPathes();
+                Logger.Instance.Log($"GetPixelsFromPNG: randomItemPath {randomItemPath}");
+
+                byte[] bytes = File.ReadAllBytes(randomItemPath);
+                Logger.Instance.Log($"GetPixelsFromPNG: bytes {bytes.Length}");
+
+                Texture2D texture = new Texture2D(2, 2);
+                texture.LoadImage(bytes);
+
+                Logger.Instance.Log($"GetPixelsFromPNG: Pixels32 Count {texture.GetPixels32().Length}");
+                return texture.GetPixels32();
+            }
+        }
+        catch (Exception ex) {
+            Logger.Instance.Log($"GetPixelsFromPNG: {ex.Message}");
+            throw new ArgumentException($"{ex.Message}");
+        }
     }
 
     private Dictionary<Color, int> GetColorsFromPNG() {
-          var colors = new Dictionary<Color, int>();
+        var colors = new Dictionary<Color, int>();
         for (int i = 0; i < _pixels.Length; i++) {
             if (!colors.ContainsKey(_pixels[i]))
                 colors.Add(_pixels[i], 1);
@@ -131,7 +168,7 @@ public class CellsPanel : UIPanel {
     }
 
     private void OnCellSelected(Cell activeCell) {
-        if (activeCell.Equals(ActiveCell) == true) 
+        if (activeCell.Equals(ActiveCell) == true)
             return;
 
         if (ActiveCell != null && ActiveCell.CurrentState != CellStates.Fill)
@@ -145,15 +182,15 @@ public class CellsPanel : UIPanel {
     private void SwitchActiveCell() {
         _emptyCells.Remove(ActiveCell);
 
-        if (_emptyCells.Count > 0) 
+        if (_emptyCells.Count > 0)
             OnCellSelected(_emptyCells[0]);
-        
+
         EmptyCellsCountChanged?.Invoke(_emptyCells.Count);
     }
 
     private void SwitchActiveCell(OffsetDirections offsetDirection) {
         float row = ActiveCell.Position.y;
-        float column = ActiveCell.Position.x; 
+        float column = ActiveCell.Position.x;
 
         switch (offsetDirection) {
             case OffsetDirections.Left:
@@ -198,7 +235,7 @@ public class CellsPanel : UIPanel {
         float fadeValue = Mathf.PerlinNoise(cell.Position.x, cell.Position.y);
 
         var s = DOTween.Sequence();
-        
+
         s.Append(cell.Background.DOFade(fadeValue, duration));
         s.Insert(timeOffset, cell.Background.DOFade(1f, duration));
     }

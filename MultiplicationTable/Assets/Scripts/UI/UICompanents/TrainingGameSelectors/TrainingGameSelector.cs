@@ -13,8 +13,7 @@ public class TrainingGameSelector : UICompanent {
     private Color _text—olorSelectedToggle;
     private Color _text—olorDeselectedToggle;
     private TrainingGameSelectorConfig _config;
-    private bool _isSelect = false;
-
+    
     public void Int(TrainingGameSelectorConfig config, ToggleGroup group) {
         _config = config;
         _toggle.group = group;
@@ -43,19 +42,16 @@ public class TrainingGameSelector : UICompanent {
     }
 
     private void ToggleClick(bool status) {
-        if (status == true && _isSelect == true) {
-            TrainingGameSelected?.Invoke(_config.Type);
-        }
-        else if (status == true) {
+         if (status == true) {
             _gameName.color = _text—olorSelectedToggle;
             _gameIcon.color = _text—olorSelectedToggle;
-            _isSelect = true;
         }
         else if (status == false) {
             _gameName.color = _text—olorDeselectedToggle;
-            _gameIcon.color = _text—olorDeselectedToggle;
-            _isSelect = false;
+            _gameIcon.color = _text—olorDeselectedToggle; 
         }
+
+        TrainingGameSelected?.Invoke(_config.Type);
     }
 
     public override void Dispose() {

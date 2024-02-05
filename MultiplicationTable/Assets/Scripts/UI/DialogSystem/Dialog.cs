@@ -44,6 +44,12 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
 
     public virtual void InitializationPanels() { }
 
+    public virtual void ResetPanels() {
+        foreach (var iPanel in Panels) {
+            iPanel.Reset();
+        }
+    }
+
     public virtual void AddListeners() {
         if (BackButton != null)
             BackButton.onClick.AddListener(BackButtonClick);
@@ -69,7 +75,11 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
         return (T)Panels.FirstOrDefault(panel => panel is T);
     }
 
-    private void BackButtonClick() => BackClicked?.Invoke();
+    private void BackButtonClick() {
+        ResetPanels();
+        
+        BackClicked?.Invoke();
+    } 
 
     private void SettingsButtonClick() => SettingsClicked?.Invoke();
 

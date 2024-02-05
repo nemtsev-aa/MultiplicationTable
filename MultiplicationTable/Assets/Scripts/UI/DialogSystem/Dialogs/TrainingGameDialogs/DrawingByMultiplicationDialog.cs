@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 using Zenject;
 
-public class DrawingByMultiplicationDialog : Dialog {
-    public event Action AllEmptyCellsFilled;
+public class DrawingByMultiplicationDialog : TrainingGameDialog {
+    public override event Action<TrainingGameData> TrainingGameFinished;
 
     private CellsPanel _cellsPanel;
     private EquationPanel _equationPanel;
@@ -13,22 +11,18 @@ public class DrawingByMultiplicationDialog : Dialog {
     private DrawingsConfig _drawings;
     private EquationFactory _equationFactory;
 
-    private List<EquationData> _equations;
-    private EquationData _currentEquation;
-    private TrainingGameData _data;
-
-
     [Inject]
     private void Construct(DrawingsConfig drawings, EquationFactory equationFactory) {
         _drawings = drawings;
         _equationFactory = equationFactory;
+        TrainingGameType = TrainingGameTypes.Drawing;
     }
 
-    public void SetTrainingGameData(TrainingGameData data) {
-        _data = data;
+    public override void SetTrainingGameData(TrainingGameData data) {
+        Data = data;
 
-        _equations = _equationFactory.GetEquations(_data.Multipliers, _data.DifficultyLevelType);
-        _cellsPanel.Init(GetRandonDrawingData(), _equations.Count);
+        Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
+        _cellsPanel.Init(GetRandonDrawingData(), Equations.Count);
     }
 
     public override void AddListeners() {
@@ -58,8 +52,7 @@ public class DrawingByMultiplicationDialog : Dialog {
         _equationPanel.Init();
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
-        var multipliers = new List<int>() { 2, 3, 4, 5, 6, 7, 8, 9 };
-        _multipliersPanel.Init(new MultipliersConfig(multipliers));
+        _multipliersPanel.Init(new MultipliersConfig(Multipliers));
     }
 
     private DrawingData GetRandonDrawingData() {
@@ -68,21 +61,19 @@ public class DrawingByMultiplicationDialog : Dialog {
 
     private void OnActiveCellChanged(Cell activeCell) {
         //_currentEquation = _equations[UnityEngine.Random.Range(0, _equations.Count)];
-        _currentEquation = _equations[0];
-        _currentEquation.BaseColor = activeCell.FillStateColor;
+        CurrentEquation = Equations[0];
+        CurrentEquation.BaseColor = activeCell.FillStateColor;
 
-        _equationPanel.ShowEquation(_currentEquation);
+        _equationPanel.ShowEquation(CurrentEquation);
     }
 
     private void OnEmptyCellsCountChanged(int emptyCellsCount) {
         if (emptyCellsCount == 0) {
-            AllEmptyCellsFilled?.Invoke();
-            Debug.Log($"Всe ячейки заполнены!");
+            TrainingGameFinished?.Invoke(Data);
+            ResetPanels();
         }
-        else {
+        else
             OnActiveCellChanged(_cellsPanel.ActiveCell);
-            Debug.Log($"Заполнено {emptyCellsCount}/{_equations.Count}!");
-        }
     }
 
     private void OnMultiplierSelected(int multiplier) {
@@ -92,10 +83,15 @@ public class DrawingByMultiplicationDialog : Dialog {
     }
 
     private void QuationVerification(int multiplier) {
-        if (multiplier == _currentEquation.Multiplier) {
-            _equations.Remove(_currentEquation);
-            _cellsPanel.FillActiveCell(); 
+        if (multiplier == CurrentEquation.Multiplier) {
+            Equations.Remove(CurrentEquation);
+            _equationPanel.ShowQuationVerificationResult(true);
+
+            _cellsPanel.FillActiveCell();
         }
+        else
+            _equationPanel.ShowQuationVerificationResult(false);
+
     }
 
     private void OnMultiplierSelectionPanelShowed(bool status)

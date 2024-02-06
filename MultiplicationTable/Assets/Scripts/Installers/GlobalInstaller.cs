@@ -17,6 +17,7 @@ public class GlobalInstaller : MonoInstaller {
         BuildTrainingGameConfigs();
         BindUICompanentsConfig();
         BindFactories();
+        BindTimeCounter();
     }
 
     private void BuildModsConfig() {
@@ -65,5 +66,12 @@ public class GlobalInstaller : MonoInstaller {
     private void BindFactories() {
         Container.Bind<DialogFactory>().AsSingle();
         Container.Bind<UICompanentsFactory>().AsSingle();
+    }
+
+    private void BindTimeCounter() {
+        TimeCounter timeCounter = new TimeCounter();
+
+        Container.BindInstance(timeCounter).AsSingle();
+        Container.BindInterfacesAndSelfTo<ITickable>().FromInstance(timeCounter).AsSingle();
     }
 }

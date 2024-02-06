@@ -8,7 +8,7 @@ public abstract class UIPanel : MonoBehaviour, IDisposable {
     }
 
     public virtual void Reset() {
-
+        
     }
 
     public virtual void UpdateContent() {

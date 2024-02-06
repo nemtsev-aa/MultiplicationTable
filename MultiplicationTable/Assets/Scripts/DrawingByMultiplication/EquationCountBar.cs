@@ -8,11 +8,11 @@ public class EquationCountBar : Bar {
     private int _maxValue;
     private int _currentValue = 0;
 
-    public void Init(EquationPanel equationPanel, int count) {
+    public void Init(EquationPanel equationPanel, int equationCount) {
         _equationPanel = equationPanel;
-        _maxValue = count;
+        _maxValue = equationCount;
 
-        OnValueChanged(_currentValue);
+        OnValueChanged(_currentValue, _maxValue);
 
         AddListeners();
     }
@@ -35,13 +35,13 @@ public class EquationCountBar : Bar {
         _equationPanel = null;
     }
 
-    protected override void OnValueChanged(float valueInParts) {
-        if (valueInParts == _currentValue)
+    protected override void OnValueChanged(float currentValue, float maxValue) {
+        if (currentValue == _currentValue)
             _currentValue = 0;
-        else if (valueInParts == 0)
+        else if (currentValue == 0)
             _currentValue = _maxValue;
         else
-            _currentValue = _maxValue - (int)valueInParts;
+            _currentValue = _maxValue - (int)currentValue;
 
         _countValue.text = $"{_currentValue}/{_maxValue}";
         Filler.fillAmount = (float)_currentValue / _maxValue;

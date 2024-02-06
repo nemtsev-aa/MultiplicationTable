@@ -4,18 +4,20 @@ using UnityEngine;
 public class EquationPanel : UIPanel {
     public event Action<bool> MultiplierSelectionPanelShowed;
     public event Action<bool> EquationVerificatedChanged;
-    public event Action<float> EquationsCountChanged;
+    public event Action<float, float> EquationsCountChanged;
 
     [SerializeField] private EquationView _equationView;
     [SerializeField] private EquationCountBar _equationCountBar;
     
     private EquationData _data;
     private bool _isSelect = false;
+    private int _maxEquationCount;
 
-    public void Init(int count) {
+    public void Init(int maxEquationCount) {
         AddListeners();
 
-        _equationCountBar.Init(this, count);
+        _maxEquationCount = maxEquationCount;
+        _equationCountBar.Init(this, _maxEquationCount);
     }
 
     public override void AddListeners() {
@@ -54,9 +56,9 @@ public class EquationPanel : UIPanel {
         _equationView.ShowMultiplier($"{multiplier}");
     }
 
-    public void ShowEquationVerificationResult(bool result, float count) {
+    public void ShowEquationVerificationResult(bool result, float currentEquationCount) {
         if (result) 
-            EquationsCountChanged?.Invoke(count);
+            EquationsCountChanged?.Invoke(currentEquationCount, _maxEquationCount);
 
         EquationVerificatedChanged?.Invoke(result);
     }

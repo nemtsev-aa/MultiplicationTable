@@ -7,15 +7,18 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
     private CellsPanel _cellsPanel;
     private EquationPanel _equationPanel;
     private MultiplierSelectionPanel _multipliersPanel;
+    private TimerBar _timerBar;
 
     private DrawingsConfig _drawings;
     private EquationFactory _equationFactory;
+    private TimeCounter _timeCounter;
 
     [Inject]
-    private void Construct(DrawingsConfig drawings, EquationFactory equationFactory) {
+    private void Construct(DrawingsConfig drawings, EquationFactory equationFactory, TimeCounter timeCounter) {
         _drawings = drawings;
         _equationFactory = equationFactory;
         TrainingGameType = TrainingGameTypes.Drawing;
+        _timeCounter = timeCounter;
     }
 
     public override void SetTrainingGameData(TrainingGameData data) {
@@ -24,6 +27,18 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
         _cellsPanel.Init(GetRandonDrawingData(), Equations.Count);
         _equationPanel.Init(Equations.Count);
+        //_timeCounter.SetTimeValue(3);
+    }
+
+    public override void Show(bool value) {
+        base.Show(value);
+
+        if (value == true && _timeCounter != null)
+            _timeCounter.SetWatchStatus(true);
+            //_timeCounter.SetTimerStatus(true);
+        else if (value == false && _timeCounter != null)
+            _timeCounter.SetWatchStatus(false);
+            //_timeCounter.SetTimerStatus(false);
     }
 
     public override void AddListeners() {
@@ -52,8 +67,17 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
         _multipliersPanel.Init(new MultipliersConfig(Multipliers));
-    }
 
+        _timerBar = GetPanelByType<TimerBar>();
+        _timerBar.Init(_timeCounter);
+    }
+    
+    public override void ResetPanels() {
+        base.ResetPanels();
+
+        _timeCounter.Reset();
+    }
+    
     private DrawingData GetRandonDrawingData() {
         return _drawings.Drawings[UnityEngine.Random.Range(0, _drawings.Drawings.Count)];
     }
@@ -88,7 +112,8 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
             _cellsPanel.FillActiveCell();
         }
-        else {
+        else 
+        {
             _equationPanel.ShowEquationVerificationResult(false, Equations.Count);
             // Добавить количество ошибок в результат игры -> история игр
         }   

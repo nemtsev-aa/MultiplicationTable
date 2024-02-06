@@ -20,6 +20,7 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
     protected DialogMediator Mediator;
 
     public bool IsInit { get; protected set; } = false;
+    public IReadOnlyList<UIPanel> DialogPanels => Panels;
     
     public virtual void Init() {
         if (IsInit == true)

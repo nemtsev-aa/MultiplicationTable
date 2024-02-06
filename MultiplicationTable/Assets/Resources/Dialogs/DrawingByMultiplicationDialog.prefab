@@ -667,7 +667,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _equationView: {fileID: 1684694554971641608}
-  _equationCountBar: {fileID: 6512853841787835188}
 --- !u!1 &1737161000418601085
 GameObject:
   m_ObjectHideFlags: 0
@@ -1067,10 +1066,11 @@ MonoBehaviour:
   ShareButton: {fileID: 1737161000418601087}
   HistoryButton: {fileID: 1737161000668808507}
   Panels:
+  - {fileID: 6918466955252860069}
+  - {fileID: 6512853841787835188}
   - {fileID: 1737160999135503967}
   - {fileID: 1737160999754612736}
   - {fileID: 2415790759610658693}
-  - {fileID: 6918466955252860069}
 --- !u!1 &1737161000658878652
 GameObject:
   m_ObjectHideFlags: 0

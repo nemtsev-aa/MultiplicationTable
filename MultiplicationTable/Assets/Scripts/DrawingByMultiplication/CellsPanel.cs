@@ -9,8 +9,7 @@ using Zenject;
 public class CellsPanel : UIPanel {
     private const string LargeConfig = "LargeConfig";
     private const string ConfigsPath = "EnemyConfigs";
-
-    public const float DelaySwitchingActiveCell = 1f;
+    private const float DelaySwitchingActiveCell = 1f;
 
     public event Action<Cell> ActiveCellChanged;
     public event Action<int> EmptyCellsCountChanged;

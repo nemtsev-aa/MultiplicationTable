@@ -15,6 +15,8 @@ public class EquationFactory {
         _difficultyConfig = difficultyConfig;
     }
 
+    public List<int> Multipliers => _multipliers;
+
     public List<EquationData> GetEquations(List<int> multipliables, DifficultyLevelTypes difficultyLevel) {
 
         if (multipliables != null && multipliables.Count > 0)

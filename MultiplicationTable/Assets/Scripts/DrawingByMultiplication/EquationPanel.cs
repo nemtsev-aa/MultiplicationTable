@@ -2,44 +2,41 @@ using System;
 using UnityEngine;
 
 public class EquationPanel : UIPanel {
-    public event Action<bool> MultiplierSelectionPanelShowed;
     public event Action<bool> EquationVerificatedChanged;
-    public event Action<float, float> EquationsCountChanged;
 
     [SerializeField] private EquationView _equationView;
-    [SerializeField] private EquationCountBar _equationCountBar;
-    
+    private MultiplierSelectionPanel _multipliersPanel;
+
     private EquationData _data;
-    private bool _isSelect = false;
     private int _maxEquationCount;
 
-    public void Init(int maxEquationCount) {
-        AddListeners();
+    public void Init(MultiplierSelectionPanel multipliersPanel) {
+        _multipliersPanel = multipliersPanel;
 
-        _maxEquationCount = maxEquationCount;
-        _equationCountBar.Init(this, _maxEquationCount);
+        AddListeners();
     }
 
     public override void AddListeners() {
         base.AddListeners();
 
-        _equationView.NumberInputStatusChanged += OnNumberInputStatusChanged;
+        _equationView.MultiplierInputStatusChanged += OnMultiplierInputStatusChanged;
+        _multipliersPanel.MultiplierSelected += OnMultiplierSelected;
     }
 
     public override void RemoveListeners() {
         base.RemoveListeners();
 
-        _equationView.NumberInputStatusChanged -= OnNumberInputStatusChanged;
+        _equationView.MultiplierInputStatusChanged -= OnMultiplierInputStatusChanged;
+        _multipliersPanel.MultiplierSelected -= OnMultiplierSelected;
     }
 
     public override void Reset() {
         base.Reset();
 
         _data = null;
-        _isSelect = false;
-
         _equationView.Reset();
-        _equationCountBar.Reset(); 
+
+        RemoveListeners();
     }
 
     public void ShowEquation(EquationData data) {
@@ -50,25 +47,24 @@ public class EquationPanel : UIPanel {
             _equationView.Init(this, config);
         }
     }
-
-    public void SetMultiplier(int multiplier) {
-        _isSelect = false;
+    
+    private void OnMultiplierSelected(int multiplier) {
         _equationView.ShowMultiplier($"{multiplier}");
+
+        EquationVerification(multiplier);
     }
 
-    public void ShowEquationVerificationResult(bool result, float currentEquationCount) {
-        if (result) 
-            EquationsCountChanged?.Invoke(currentEquationCount, _maxEquationCount);
-
-        EquationVerificatedChanged?.Invoke(result);
-    }
-
-    private void OnNumberInputStatusChanged() {
-        if (_isSelect)
-            _isSelect = false;
+    private void OnMultiplierInputStatusChanged() {
+        if (_multipliersPanel.gameObject.activeSelf == true)
+            _multipliersPanel.Show(false);
         else
-            _isSelect = true;
+            _multipliersPanel.Show(true);
+    }
 
-        MultiplierSelectionPanelShowed?.Invoke(_isSelect);
+    private void EquationVerification(int multiplier) {
+        bool result = (multiplier == _data.Multiplier) ? true : false;
+        
+        _equationView.ShowQuationVerificationResult(result);
+        EquationVerificatedChanged?.Invoke(result);
     }
 }

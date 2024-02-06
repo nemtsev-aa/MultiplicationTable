@@ -3,15 +3,18 @@ using Zenject;
 
 public class DrawingByMultiplicationDialog : TrainingGameDialog {
     public override event Action<TrainingGameData> TrainingGameFinished;
+    public Action<float, float> EquationsCountChanged;
 
+    private TimerBar _timerBar;
+    private EquationCountBar _equationCountBar;
     private CellsPanel _cellsPanel;
     private EquationPanel _equationPanel;
     private MultiplierSelectionPanel _multipliersPanel;
-    private TimerBar _timerBar;
 
     private DrawingsConfig _drawings;
     private EquationFactory _equationFactory;
     private TimeCounter _timeCounter;
+    private int _maxEquationCount;
 
     [Inject]
     private void Construct(DrawingsConfig drawings, EquationFactory equationFactory, TimeCounter timeCounter) {
@@ -21,24 +24,41 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         _timeCounter = timeCounter;
     }
 
+    public override void Show(bool value) {
+        base.Show(value);
+
+        if (_timeCounter == null)
+            return;
+
+        _timeCounter.SetWatchStatus(value);
+    }
+    
     public override void SetTrainingGameData(TrainingGameData data) {
         Data = data;
 
         Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
-        _cellsPanel.Init(GetRandonDrawingData(), Equations.Count);
-        _equationPanel.Init(Equations.Count);
-        //_timeCounter.SetTimeValue(3);
+        _maxEquationCount = Equations.Count;
+
+        _cellsPanel.Init(GetRandonDrawingData(), _maxEquationCount);
+        
+        _equationCountBar.Init(this, _maxEquationCount);
+        _equationPanel.Init(_multipliersPanel);
+        
     }
 
-    public override void Show(bool value) {
-        base.Show(value);
+    public override void InitializationPanels() {
+        base.InitializationPanels();
+        
+        _timerBar = GetPanelByType<TimerBar>();
+        _timerBar.Init(_timeCounter);
 
-        if (value == true && _timeCounter != null)
-            _timeCounter.SetWatchStatus(true);
-            //_timeCounter.SetTimerStatus(true);
-        else if (value == false && _timeCounter != null)
-            _timeCounter.SetWatchStatus(false);
-            //_timeCounter.SetTimerStatus(false);
+        _equationCountBar = GetPanelByType<EquationCountBar>();
+        _cellsPanel = GetPanelByType<CellsPanel>();
+        _equationPanel = GetPanelByType<EquationPanel>();
+
+        _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
+        var multipliersConfig = new MultipliersConfig(_equationFactory.Multipliers);
+        _multipliersPanel.Init(multipliersConfig);
     }
 
     public override void AddListeners() {
@@ -46,8 +66,8 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         _cellsPanel.ActiveCellChanged += OnActiveCellChanged;
         _cellsPanel.EmptyCellsCountChanged += OnEmptyCellsCountChanged;
-        _multipliersPanel.MultiplierSelected += OnMultiplierSelected;
-        _equationPanel.MultiplierSelectionPanelShowed += OnMultiplierSelectionPanelShowed;
+
+        _equationPanel.EquationVerificatedChanged += OnEquationVerificatedChanged;
     }
 
     public override void RemoveListeners() {
@@ -55,23 +75,10 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         _cellsPanel.ActiveCellChanged -= OnActiveCellChanged;
         _cellsPanel.EmptyCellsCountChanged -= OnEmptyCellsCountChanged;
-        _multipliersPanel.MultiplierSelected -= OnMultiplierSelected;
-        _equationPanel.MultiplierSelectionPanelShowed -= OnMultiplierSelectionPanelShowed;
+
+        _equationPanel.EquationVerificatedChanged -= OnEquationVerificatedChanged;
     }
 
-    public override void InitializationPanels() {
-        base.InitializationPanels();
-
-        _cellsPanel = GetPanelByType<CellsPanel>();
-        _equationPanel = GetPanelByType<EquationPanel>();
-
-        _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
-        _multipliersPanel.Init(new MultipliersConfig(Multipliers));
-
-        _timerBar = GetPanelByType<TimerBar>();
-        _timerBar.Init(_timeCounter);
-    }
-    
     public override void ResetPanels() {
         base.ResetPanels();
 
@@ -83,8 +90,7 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
     }
 
     private void OnActiveCellChanged(Cell activeCell) {
-        //_currentEquation = _equations[UnityEngine.Random.Range(0, _equations.Count)];
-        CurrentEquation = Equations[0];
+        CurrentEquation = Equations[UnityEngine.Random.Range(0, Equations.Count)];
         CurrentEquation.BaseColor = activeCell.FillStateColor;
 
         _equationPanel.ShowEquation(CurrentEquation);
@@ -99,27 +105,18 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
             OnActiveCellChanged(_cellsPanel.ActiveCell);
     }
 
-    private void OnMultiplierSelected(int multiplier) {
-        _equationPanel.SetMultiplier(multiplier);
-
-        EquationVerification(multiplier);
-    }
-
-    private void EquationVerification(int multiplier) {
-        if (multiplier == CurrentEquation.Multiplier) {
+    private void OnEquationVerificatedChanged(bool result) {
+        if (result) {
             Equations.Remove(CurrentEquation);
-            _equationPanel.ShowEquationVerificationResult(true, Equations.Count);
 
             _cellsPanel.FillActiveCell();
+            EquationsCountChanged?.Invoke(Equations.Count, _maxEquationCount);
         }
         else 
         {
-            _equationPanel.ShowEquationVerificationResult(false, Equations.Count);
             // Добавить количество ошибок в результат игры -> история игр
-        }   
+
+        }
+
     }
-
-    private void OnMultiplierSelectionPanelShowed(bool status)
-        => _multipliersPanel.Show(status);
-
 }

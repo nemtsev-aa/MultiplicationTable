@@ -12,7 +12,7 @@ public class EquationCountBar : Bar {
         _maxValue = equationCount;
         _trainingGameDialog = trainingGameDialog;
         
-        OnValueChanged(_currentValue, _maxValue);
+        OnValueChanged(_maxValue, _maxValue);
 
         AddListeners();
     }
@@ -36,9 +36,8 @@ public class EquationCountBar : Bar {
     }
 
     protected override void OnValueChanged(float currentValue, float maxValue) {
-        if (currentValue == _currentValue)
-            _currentValue = 0;
-        else if (currentValue == 0)
+
+        if (currentValue == 0)
             _currentValue = _maxValue;
         else
             _currentValue = _maxValue - (int)currentValue;

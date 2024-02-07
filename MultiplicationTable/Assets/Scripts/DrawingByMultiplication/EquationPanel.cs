@@ -11,8 +11,10 @@ public class EquationPanel : UIPanel {
     private int _maxEquationCount;
 
     public void Init(MultiplierSelectionPanel multipliersPanel) {
-        _multipliersPanel = multipliersPanel;
+        if (_multipliersPanel != null)
+            return;
 
+        _multipliersPanel = multipliersPanel;
         AddListeners();
     }
 
@@ -54,6 +56,13 @@ public class EquationPanel : UIPanel {
         EquationVerification(multiplier);
     }
 
+    private void EquationVerification(int multiplier) {
+        bool result = (multiplier == _data.Multiplier) ? true : false;
+        
+        _equationView.ShowQuationVerificationResult(result);
+        EquationVerificatedChanged?.Invoke(result);
+    }
+
     private void OnMultiplierInputStatusChanged() {
         if (_multipliersPanel.gameObject.activeSelf == true)
             _multipliersPanel.Show(false);
@@ -61,10 +70,5 @@ public class EquationPanel : UIPanel {
             _multipliersPanel.Show(true);
     }
 
-    private void EquationVerification(int multiplier) {
-        bool result = (multiplier == _data.Multiplier) ? true : false;
-        
-        _equationView.ShowQuationVerificationResult(result);
-        EquationVerificatedChanged?.Invoke(result);
-    }
+
 }

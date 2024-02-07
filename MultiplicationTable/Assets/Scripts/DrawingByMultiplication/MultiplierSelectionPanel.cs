@@ -12,13 +12,16 @@ public class MultiplierSelectionPanel : UIPanel {
     private MultipliersConfig _config;
     private List<NumberView> _numberViews;
 
+    private bool _hideAfterSelection;
+    
     [Inject]
     private void Construct(UICompanentsFactory companentsFactory) {
         _factory = companentsFactory;
     }
 
-    public void Init(MultipliersConfig config) {
+    public void Init(MultipliersConfig config, bool hideAfterSelection = true) {
         _config = config;
+        _hideAfterSelection = hideAfterSelection;
 
         CreateNumberViews();
         Show(false);
@@ -47,7 +50,8 @@ public class MultiplierSelectionPanel : UIPanel {
     }
 
     private void OnViewSelected(int multiplier) {
-        Show(false);
+        Show(!_hideAfterSelection);
+
         MultiplierSelected?.Invoke(multiplier);
     } 
 }

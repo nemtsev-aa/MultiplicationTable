@@ -22,6 +22,8 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         _drawings = drawings;
         _equationFactory = equationFactory;
         TrainingGameType = TrainingGameTypes.Drawing;
+        DialogType = DialogTypes.DrawingByMultiplication;
+
         _timeCounter = timeCounter;
     }
 
@@ -35,7 +37,7 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
     }
     
     public override void SetTrainingGameData(TrainingGameData data) {
-        Data = data;
+        base.SetTrainingGameData(data);
 
         Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
         _maxEquationCount = EquationsCount;
@@ -56,7 +58,7 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
         var multipliersConfig = new MultipliersConfig(_equationFactory.Multipliers);
-        _multipliersPanel.Init(multipliersConfig);
+        _multipliersPanel.Init(multipliersConfig, true);
     }
 
     public override void AddListeners() {
@@ -81,10 +83,12 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         base.ResetPanels();
 
         _timeCounter.Reset();
+        PassedEquation.Clear();
     }
     
     public override void PreparingForClosure() {
         bool gameResult = (EquationsCount > 0) ? true : false;
+        
         AttemptData data = new AttemptData(Data, _timeCounter.RemainingTime, gameResult, PassedEquation);
         TrainingGameFinished?.Invoke(data);
     }
@@ -101,7 +105,7 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
     }
 
     private void OnEquationVerificatedChanged(bool result) {
-        PassedEquation.Add(CurrentEquation, result);
+        SetVerificationResult(result); 
 
         if (result) {
             Equations.Remove(CurrentEquation);
@@ -109,6 +113,11 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
             EquationsCountChanged?.Invoke(EquationsCount, _maxEquationCount);
         }
+    }
+
+    private void SetVerificationResult(bool result) {
+        CurrentEquation.Answer = result;
+        PassedEquation.Add(CurrentEquation);
     }
 
     private void OnEmptyCellsCountChanged(int emptyCellsCount) {

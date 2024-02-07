@@ -81,6 +81,7 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
     private void BackButtonClick() {
         PreparingForClosure();
         ResetPanels();
+
         BackClicked?.Invoke();
     }
 

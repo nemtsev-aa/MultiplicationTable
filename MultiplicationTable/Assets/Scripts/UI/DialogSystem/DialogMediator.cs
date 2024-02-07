@@ -131,12 +131,10 @@ public class DialogMediator : IDisposable {
     #region TrainingModeActions
     private void SubscribeToTrainingDialogActions() {
         _trainingModeDialog.TrainingGameStarted += OnTrainingGameStarted;
-        _trainingGameDialog.TrainingGameFinished += OnTrainingGameFinished;
     }
 
     private void UnsubscribeToTrainingDialogActions() {
         _trainingModeDialog.TrainingGameStarted -= OnTrainingGameStarted;
-        _trainingGameDialog.TrainingGameFinished -= OnTrainingGameFinished;
     }
 
     private void OnTrainingGameStarted(TrainingGameData data) {
@@ -144,10 +142,14 @@ public class DialogMediator : IDisposable {
         _trainingGameDialog.TrainingGameFinished += OnTrainingGameFinished;
 
         _trainingGameDialog.SetTrainingGameData(data);
-        _dialogSwitcher.ShowDialog(DialogTypes.DrawingByMultiplication);
+        _dialogSwitcher.ShowDialog(_trainingGameDialog.DialogType);
     }
 
     private void OnTrainingGameFinished(AttemptData data) {
+        /////////////////////////////////////////////////
+        // «аписать данные о попытке в историю попыток //
+        /////////////////////////////////////////////////
+
         _trainingGameDialog.TrainingGameFinished -= OnTrainingGameFinished;
         _dialogSwitcher.ShowDialog(DialogTypes.TrainingMode);
     }

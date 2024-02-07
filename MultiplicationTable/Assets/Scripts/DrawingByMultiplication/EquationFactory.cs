@@ -57,7 +57,6 @@ public class EquationFactory {
     }
 
     private bool CheckEquationCopyCount(EquationData equation, int allowedCopiesCount) {
-
         var equationCopyCount = _equations.Where(data 
             => data.Multipliable == equation.Multipliable && 
             data.Multiplier == equation.Multiplier).Count();

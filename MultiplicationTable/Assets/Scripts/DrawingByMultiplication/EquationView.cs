@@ -20,7 +20,6 @@ public class EquationView : UICompanent {
 
     private float _duration = 0.3f;
     private EquationData _data;
-    private bool _isShow = false;
 
     public int Multiplier => _data.Multiplier;
 
@@ -66,7 +65,9 @@ public class EquationView : UICompanent {
         _multiplierText.text = $"{MultiplierDefaultText}";
         _equationText.text = $"{EqualChar}";
         _resultText.text = $"{_data.Result}";
-        _backgroundColor.color = _data.BaseColor;
+
+        if (_data.BaseColor != Color.clear)
+            _backgroundColor.color = _data.BaseColor;
     }
 
     private void MultiplierInputButtonClick()

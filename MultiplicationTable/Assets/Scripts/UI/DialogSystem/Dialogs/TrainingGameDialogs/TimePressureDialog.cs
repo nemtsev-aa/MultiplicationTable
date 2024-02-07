@@ -2,6 +2,8 @@ using System;
 using Zenject;
 
 public class TimePressureDialog : TrainingGameDialog {
+    private const float DelaySwitchingEquation = 0.5f;
+
     public override event Action<AttemptData> TrainingGameFinished;
     public override event Action<float, float> EquationsCountChanged;
 
@@ -17,7 +19,9 @@ public class TimePressureDialog : TrainingGameDialog {
     [Inject]
     private void Construct(EquationFactory equationFactory, TimeCounter timeCounter) {
         _equationFactory = equationFactory;
-        TrainingGameType = TrainingGameTypes.Drawing;
+        TrainingGameType = TrainingGameTypes.TimePressure;
+        DialogType = DialogTypes.TimePressure;
+
         _timeCounter = timeCounter;
     }
 
@@ -31,7 +35,7 @@ public class TimePressureDialog : TrainingGameDialog {
     }
 
     public override void SetTrainingGameData(TrainingGameData data) {
-        Data = data;
+        base.SetTrainingGameData(data);
 
         Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
         _maxEquationCount = Equations.Count;
@@ -39,6 +43,9 @@ public class TimePressureDialog : TrainingGameDialog {
         _equationCountBar.Init(this, _maxEquationCount);
         _equationPanel.Init(_multipliersPanel);
 
+        GetRandomEquation();
+  
+        _multipliersPanel.Show(true);
     }
 
     public override void InitializationPanels() {
@@ -50,7 +57,7 @@ public class TimePressureDialog : TrainingGameDialog {
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
         var multipliersConfig = new MultipliersConfig(_equationFactory.Multipliers);
-        _multipliersPanel.Init(multipliersConfig);
+        _multipliersPanel.Init(multipliersConfig, false);
     }
 
     public override void AddListeners() {
@@ -69,20 +76,38 @@ public class TimePressureDialog : TrainingGameDialog {
         base.ResetPanels();
 
         _timeCounter.Reset();
+        PassedEquation.Clear();
     }
     
     public override void PreparingForClosure() {
         bool gameResult = (EquationsCount > 0) ? true : false;
+        
         AttemptData data = new AttemptData(Data, _timeCounter.RemainingTime, gameResult, PassedEquation);
+        
         TrainingGameFinished?.Invoke(data);
     }
 
     private void OnEquationVerificatedChanged(bool result) {
-        PassedEquation.Add(CurrentEquation, result);
+        SetVerificationResult(result);
 
         if (result) {
             Equations.Remove(CurrentEquation);
             EquationsCountChanged?.Invoke(Equations.Count, _maxEquationCount);
         }
+
+        if (EquationsCount > 0)
+            Invoke(nameof(GetRandomEquation), DelaySwitchingEquation);
+        else
+            Invoke(nameof(PreparingForClosure), DelaySwitchingEquation);
+    }
+
+    private void SetVerificationResult(bool result) {
+        CurrentEquation.Answer = result;
+        PassedEquation.Add(CurrentEquation);
+    }
+
+    private void GetRandomEquation() {
+        CurrentEquation = Equations[UnityEngine.Random.Range(0, Equations.Count)];
+        _equationPanel.ShowEquation(CurrentEquation);
     }
 }

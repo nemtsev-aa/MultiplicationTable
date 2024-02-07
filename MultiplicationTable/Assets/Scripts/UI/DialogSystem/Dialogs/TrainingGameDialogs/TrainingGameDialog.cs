@@ -11,10 +11,13 @@ public abstract class TrainingGameDialog : Dialog {
     protected EquationData CurrentEquation;
 
     public TrainingGameTypes TrainingGameType { get; set; }
+    public DialogTypes DialogType { get; set; }
 
-    protected Dictionary<EquationData, bool> PassedEquation = new Dictionary<EquationData, bool>();
+    protected List<EquationData> PassedEquation = new List<EquationData>();
     protected int EquationsCount => Equations.Count;
     
-    public abstract void SetTrainingGameData(TrainingGameData data);
-   
+    public virtual void SetTrainingGameData(TrainingGameData data) {
+        Data = data;
+        PassedEquation.Clear();
+    }
 }

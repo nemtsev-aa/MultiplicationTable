@@ -13,6 +13,9 @@ public class TimeCounter : ITickable {
     private bool _countdown;
     private bool _countup;
 
+    public float ElapsedTime => _elapsedTime;
+    public float RemainingTime => _remainingTime;
+
     public void SetTimeValue(float time) {
         _time = time;
         _remainingTime = time;
@@ -22,6 +25,7 @@ public class TimeCounter : ITickable {
     public void SetTimerStatus(bool status) => _countdown = status;
 
     public void SetWatchStatus(bool status) => _countup = status;
+    
     
     public void Reset() {
         _time = _remainingTime = _elapsedTime = 0;

@@ -8,8 +8,6 @@ public class LearningModeDialog : Dialog {
     public List<int> Multipliers => _currentMultipliers;
     
     public override void InitializationPanels() {
-        base.InitializationPanels();
-
         _multiplicationPanel = GetPanelByType<MultiplicationPanel>();
         _multiplicationPanel.Init();
     }
@@ -26,9 +24,14 @@ public class LearningModeDialog : Dialog {
         _multiplicationPanel.MultiplierSelected -= OnMultiplierSelected;
     }
 
+    public override void PreparingForClosure() {
+
+    }
+
     private void OnMultiplierSelected(List<int> multipliers) {
         _currentMultipliers = multipliers;
 
         Debug.Log($"Selection Multiplier: {_currentMultipliers}");
     }
+
 }

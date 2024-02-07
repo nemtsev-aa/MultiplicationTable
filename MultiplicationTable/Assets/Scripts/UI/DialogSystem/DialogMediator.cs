@@ -14,6 +14,7 @@ public class DialogMediator : IDisposable {
     private HistoryDialog _historyDialog;
 
     private DrawingByMultiplicationDialog _drawingDialog;
+    private TimePressureDialog _timePressureDialog;
 
     private DialogSwitcher _dialogSwitcher;
     private List<Dialog> _dialogs;
@@ -40,6 +41,7 @@ public class DialogMediator : IDisposable {
         _historyDialog = _uIManager.GetDialogByType(DialogTypes.History).GetComponent<HistoryDialog>();
 
         _drawingDialog = _uIManager.GetDialogByType(DialogTypes.DrawingByMultiplication).GetComponent<DrawingByMultiplicationDialog>();
+        _timePressureDialog = _uIManager.GetDialogByType(DialogTypes.TimePressure).GetComponent<TimePressureDialog>();
 
         _dialogs = new List<Dialog>() {
             _mainMenuDialog,
@@ -48,11 +50,13 @@ public class DialogMediator : IDisposable {
             _examModeDialog,
             _settingsDialog,
             _historyDialog,
-            _drawingDialog
+            _drawingDialog,
+            _timePressureDialog
         };
 
         _trainingGameDialogs = new List<TrainingGameDialog>() {
-            _drawingDialog
+            _drawingDialog,
+            _timePressureDialog
         };
     }
 
@@ -127,7 +131,7 @@ public class DialogMediator : IDisposable {
     #region TrainingModeActions
     private void SubscribeToTrainingDialogActions() {
         _trainingModeDialog.TrainingGameStarted += OnTrainingGameStarted;
-        
+        _trainingGameDialog.TrainingGameFinished += OnTrainingGameFinished;
     }
 
     private void UnsubscribeToTrainingDialogActions() {
@@ -143,7 +147,7 @@ public class DialogMediator : IDisposable {
         _dialogSwitcher.ShowDialog(DialogTypes.DrawingByMultiplication);
     }
 
-    private void OnTrainingGameFinished(TrainingGameData data) {
+    private void OnTrainingGameFinished(AttemptData data) {
         _trainingGameDialog.TrainingGameFinished -= OnTrainingGameFinished;
         _dialogSwitcher.ShowDialog(DialogTypes.TrainingMode);
     }

@@ -12,8 +12,6 @@ public class MainMenuDialog : Dialog {
     }
 
     public override void InitializationPanels() {
-        base.InitializationPanels();
-
         _modePanel = GetPanelByType<ModePanel>();
         _modePanel.Init();
     }
@@ -31,10 +29,15 @@ public class MainMenuDialog : Dialog {
         _modePanel.ModeSelected -= OnModeSelected;
     }
 
+    public override void PreparingForClosure() {
+        
+    }
+
     private void OnModeSelected(ModeTypes type) {
         _currentModeType = type;
 
         Debug.Log($"Selection ModeType: {_currentModeType}");
         ApplicationModeSelected?.Invoke(type);
     }
+
 }

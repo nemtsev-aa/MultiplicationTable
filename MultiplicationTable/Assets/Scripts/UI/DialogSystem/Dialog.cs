@@ -43,8 +43,6 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
         panel.Show(value);
     }
 
-    public virtual void InitializationPanels() { }
-
     public virtual void ResetPanels() {
         foreach (var iPanel in Panels) {
             iPanel.Reset();
@@ -76,11 +74,15 @@ public abstract class Dialog : MonoBehaviour, IDisposable {
         return (T)Panels.FirstOrDefault(panel => panel is T);
     }
 
+    public abstract void InitializationPanels();
+
+    public abstract void PreparingForClosure();
+    
     private void BackButtonClick() {
+        PreparingForClosure();
         ResetPanels();
-        
         BackClicked?.Invoke();
-    } 
+    }
 
     private void SettingsButtonClick() => SettingsClicked?.Invoke();
 

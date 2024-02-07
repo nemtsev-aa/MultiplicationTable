@@ -1,25 +1,21 @@
 using System;
-using System.Collections.Generic;
 using Zenject;
 
-public class DrawingByMultiplicationDialog : TrainingGameDialog {
+public class TimePressureDialog : TrainingGameDialog {
     public override event Action<AttemptData> TrainingGameFinished;
     public override event Action<float, float> EquationsCountChanged;
 
     private TimerBar _timerBar;
     private EquationCountBar _equationCountBar;
-    private CellsPanel _cellsPanel;
     private EquationPanel _equationPanel;
     private MultiplierSelectionPanel _multipliersPanel;
 
-    private DrawingsConfig _drawings;
     private EquationFactory _equationFactory;
     private TimeCounter _timeCounter;
     private int _maxEquationCount;
 
     [Inject]
-    private void Construct(DrawingsConfig drawings, EquationFactory equationFactory, TimeCounter timeCounter) {
-        _drawings = drawings;
+    private void Construct(EquationFactory equationFactory, TimeCounter timeCounter) {
         _equationFactory = equationFactory;
         TrainingGameType = TrainingGameTypes.Drawing;
         _timeCounter = timeCounter;
@@ -33,25 +29,23 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         _timeCounter.SetWatchStatus(value);
     }
-    
+
     public override void SetTrainingGameData(TrainingGameData data) {
         Data = data;
 
         Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
-        _maxEquationCount = EquationsCount;
+        _maxEquationCount = Equations.Count;
 
-        _cellsPanel.Init(GetRandonDrawingData(), _maxEquationCount);
-        
         _equationCountBar.Init(this, _maxEquationCount);
         _equationPanel.Init(_multipliersPanel);
+
     }
 
-    public override void InitializationPanels() { 
+    public override void InitializationPanels() {
         _timerBar = GetPanelByType<TimerBar>();
         _timerBar.Init(_timeCounter);
 
         _equationCountBar = GetPanelByType<EquationCountBar>();
-        _cellsPanel = GetPanelByType<CellsPanel>();
         _equationPanel = GetPanelByType<EquationPanel>();
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
@@ -62,17 +56,11 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
     public override void AddListeners() {
         base.AddListeners();
 
-        _cellsPanel.ActiveCellChanged += OnActiveCellChanged;
-        _cellsPanel.EmptyCellsCountChanged += OnEmptyCellsCountChanged;
-
         _equationPanel.EquationVerificatedChanged += OnEquationVerificatedChanged;
     }
 
     public override void RemoveListeners() {
         base.RemoveListeners();
-
-        _cellsPanel.ActiveCellChanged -= OnActiveCellChanged;
-        _cellsPanel.EmptyCellsCountChanged -= OnEmptyCellsCountChanged;
 
         _equationPanel.EquationVerificatedChanged -= OnEquationVerificatedChanged;
     }
@@ -89,34 +77,12 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         TrainingGameFinished?.Invoke(data);
     }
 
-    private DrawingData GetRandonDrawingData() {
-        return _drawings.Drawings[UnityEngine.Random.Range(0, _drawings.Drawings.Count)];
-    }
-
-    private void OnActiveCellChanged(Cell activeCell) {
-        CurrentEquation = Equations[UnityEngine.Random.Range(0, Equations.Count)];
-        CurrentEquation.BaseColor = activeCell.FillStateColor;
-
-        _equationPanel.ShowEquation(CurrentEquation);
-    }
-
     private void OnEquationVerificatedChanged(bool result) {
         PassedEquation.Add(CurrentEquation, result);
 
         if (result) {
             Equations.Remove(CurrentEquation);
-            _cellsPanel.FillActiveCell();
-
-            EquationsCountChanged?.Invoke(EquationsCount, _maxEquationCount);
+            EquationsCountChanged?.Invoke(Equations.Count, _maxEquationCount);
         }
-    }
-
-    private void OnEmptyCellsCountChanged(int emptyCellsCount) {
-        if (emptyCellsCount == 0) {
-            PreparingForClosure();
-            return;
-        }
-
-        OnActiveCellChanged(_cellsPanel.ActiveCell);
     }
 }

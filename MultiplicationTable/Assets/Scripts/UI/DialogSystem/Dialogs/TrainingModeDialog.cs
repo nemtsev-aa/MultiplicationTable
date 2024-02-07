@@ -19,8 +19,6 @@ public class TrainingModeDialog : Dialog {
     public TrainingGameData TrainingGameData { get; private set; }
 
     public override void InitializationPanels() {
-        base.InitializationPanels();
-
         _multiplicationPanel = GetPanelByType<MultiplicationPanel>();
         _multiplicationPanel.Init();
 
@@ -47,6 +45,10 @@ public class TrainingModeDialog : Dialog {
         _multiplicationPanel.MultiplierSelected -= OnMultiplierSelected;
         _difficultyLevelPanel.DifficultyLevelSelected -= OnDifficultyLevelSelected;
         _trainingGamePanel.TrainingGameSelected -= OnTrainingGameSelected;
+    }
+
+    public override void PreparingForClosure() {
+        
     }
 
     private void OnMultiplierSelected(List<int> multipliers) {

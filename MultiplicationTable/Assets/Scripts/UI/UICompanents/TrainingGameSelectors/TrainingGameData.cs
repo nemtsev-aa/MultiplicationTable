@@ -10,7 +10,7 @@ public class TrainingGameData : MiniGameData {
 
     public ModeTypes ModeType { get; private set; }
     public TrainingGameTypes GameType { get; private set; }
-
+    
     public override string ToString() {
         return $"ModeType: {ModeType}, GameType: {GameType}, Multipliers: {Multipliers}, DifficultyLevelType: {DifficultyLevelType}";
     }

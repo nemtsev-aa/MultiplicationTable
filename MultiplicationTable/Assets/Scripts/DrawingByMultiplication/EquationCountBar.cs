@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class EquationCountBar : Bar {
     [SerializeField] private TextMeshProUGUI _countValue;
-    private DrawingByMultiplicationDialog _drawingByMultiplicationDialog;
+    private TrainingGameDialog _trainingGameDialog;
     
     private int _maxValue;
     private int _currentValue = 0;
 
-    public void Init(DrawingByMultiplicationDialog drawingByMultiplicationDialog, int equationCount) {
+    public void Init(TrainingGameDialog trainingGameDialog, int equationCount) {
         _maxValue = equationCount;
-        _drawingByMultiplicationDialog = drawingByMultiplicationDialog;
+        _trainingGameDialog = trainingGameDialog;
         
         OnValueChanged(_currentValue, _maxValue);
 
@@ -20,13 +20,13 @@ public class EquationCountBar : Bar {
     public override void AddListeners() {
         base.AddListeners();
 
-        _drawingByMultiplicationDialog.EquationsCountChanged += OnValueChanged;
+        _trainingGameDialog.EquationsCountChanged += OnValueChanged;
     }
 
     public override void RemoveListeners() {
         base.RemoveListeners();
 
-        _drawingByMultiplicationDialog.EquationsCountChanged -= OnValueChanged;
+        _trainingGameDialog.EquationsCountChanged -= OnValueChanged;
     }
 
     public override void Reset() {

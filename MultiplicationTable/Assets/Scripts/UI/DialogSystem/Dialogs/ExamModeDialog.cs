@@ -1,7 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class ExamModeDialog : Dialog {
-    
+    public override void InitializationPanels() {
+
+    }
+
+    public override void PreparingForClosure() {
+
+    }
 }

@@ -21,14 +21,12 @@ public class EquationPanel : UIPanel {
     public override void AddListeners() {
         base.AddListeners();
 
-        _equationView.MultiplierInputStatusChanged += OnMultiplierInputStatusChanged;
         _multipliersPanel.MultiplierSelected += OnMultiplierSelected;
     }
 
     public override void RemoveListeners() {
         base.RemoveListeners();
 
-        _equationView.MultiplierInputStatusChanged -= OnMultiplierInputStatusChanged;
         _multipliersPanel.MultiplierSelected -= OnMultiplierSelected;
     }
 
@@ -59,16 +57,7 @@ public class EquationPanel : UIPanel {
     private void EquationVerification(int multiplier) {
         bool result = (multiplier == _data.Multiplier) ? true : false;
         
-        _equationView.ShowQuationVerificationResult(result);
+        _equationView.ShowEquationVerificationResult(result);
         EquationVerificatedChanged?.Invoke(result);
     }
-
-    private void OnMultiplierInputStatusChanged() {
-        if (_multipliersPanel.gameObject.activeSelf == true)
-            _multipliersPanel.Show(false);
-        else
-            _multipliersPanel.Show(true);
-    }
-
-
 }

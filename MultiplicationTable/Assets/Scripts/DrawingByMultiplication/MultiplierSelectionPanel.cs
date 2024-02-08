@@ -24,7 +24,7 @@ public class MultiplierSelectionPanel : UIPanel {
         _hideAfterSelection = hideAfterSelection;
 
         CreateNumberViews();
-        Show(false);
+        Show(!hideAfterSelection);
     }
 
     public override void RemoveListeners() {

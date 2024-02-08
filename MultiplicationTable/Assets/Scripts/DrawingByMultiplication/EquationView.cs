@@ -34,7 +34,7 @@ public class EquationView : UICompanent {
         _multiplierText.text = value;
     }
 
-    public void ShowQuationVerificationResult(bool result) {
+    public void ShowEquationVerificationResult(bool result) {
         if (result) {
             _equationText.text = $"{EqualChar}";
             _equationText.color = Color.green;

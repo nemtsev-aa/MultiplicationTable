@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using Zenject;
 
 public class DrawingByMultiplicationDialog : TrainingGameDialog {
-    private const float DelaySwitchingEquation = 1f;
+    private const float DelaySwitchingEquation = 1.5f;
 
     public override event Action<AttemptData> TrainingGameFinished;
     public override event Action<float, float> EquationsCountChanged;
@@ -37,7 +36,7 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         _timeCounter.SetWatchStatus(value);
     }
-    
+
     public override void SetTrainingGameData(TrainingGameData data) {
         base.SetTrainingGameData(data);
 
@@ -45,12 +44,12 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         _maxEquationCount = EquationsCount;
 
         _cellsPanel.Init(GetRandonDrawingData(), _maxEquationCount);
-        
+
         _equationCountBar.Init(this, _maxEquationCount);
         _equationPanel.Init(_multipliersPanel);
     }
 
-    public override void InitializationPanels() { 
+    public override void InitializationPanels() {
         _timerBar = GetPanelByType<TimerBar>();
         _timerBar.Init(_timeCounter);
 
@@ -60,15 +59,13 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
         var multipliersConfig = new MultipliersConfig(_equationFactory.Multipliers);
-        _multipliersPanel.Init(multipliersConfig, true);
+        _multipliersPanel.Init(multipliersConfig, false);
     }
 
     public override void AddListeners() {
         base.AddListeners();
 
         _cellsPanel.ActiveCellChanged += OnActiveCellChanged;
-        _cellsPanel.EmptyCellsCountChanged += OnEmptyCellsCountChanged;
-
         _equationPanel.EquationVerificatedChanged += OnEquationVerificatedChanged;
     }
 
@@ -76,27 +73,24 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         base.RemoveListeners();
 
         _cellsPanel.ActiveCellChanged -= OnActiveCellChanged;
-        _cellsPanel.EmptyCellsCountChanged -= OnEmptyCellsCountChanged;
-
         _equationPanel.EquationVerificatedChanged -= OnEquationVerificatedChanged;
     }
 
     public override void ResetPanels() {
         base.ResetPanels();
 
+        _cellsPanel.Reset();
         _timeCounter.Reset();
-        PassedEquation.Clear();
     }
-    
+
     public override void PreparingForClosure() {
         bool gameResult = (EquationsCount > 0) ? true : false;
-        
+
         AttemptData data = new AttemptData(Data,
             _timeCounter.RemainingTime,
             gameResult,
             PassedEquation);
 
-        _cellsPanel.Reset();
         TrainingGameFinished?.Invoke(data);
     }
 
@@ -117,12 +111,12 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         if (result) {
             Equations.Remove(CurrentEquation);
             EquationsCountChanged?.Invoke(Equations.Count, _maxEquationCount);
-        }
 
-        if (EquationsCount > 0) 
             _cellsPanel.FillActiveCell(DelaySwitchingEquation);
-        else
-            Invoke(nameof(PreparingForClosure), DelaySwitchingEquation);
+
+            if (EquationsCount == 0)
+                Invoke(nameof(PreparingForClosure), DelaySwitchingEquation);
+        }
     }
 
     private void SetVerificationResult(bool result) {
@@ -132,14 +126,5 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
             result);
 
         PassedEquation.Add(equation);
-    }
-
-    private void OnEmptyCellsCountChanged(int emptyCellsCount) {
-        if (emptyCellsCount == 0) {
-            PreparingForClosure();
-            return;
-        }
-
-        OnActiveCellChanged(_cellsPanel.ActiveCell);
     }
 }

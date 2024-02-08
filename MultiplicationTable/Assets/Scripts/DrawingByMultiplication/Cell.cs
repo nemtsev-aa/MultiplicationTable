@@ -104,7 +104,7 @@ public class Cell : UICompanent, IPointerDownHandler {
         var rotationRunTime = _duration * 2f;
 
         s.Append(transform.DOScale(transform.localScale.x * 2f, scaledRunTime));
-        s.Append(transform.DORotate(Vector3.forward * 360f, rotationRunTime, RotateMode.LocalAxisAdd));
+        s.Append(transform.DORotate(Vector3.forward * 360f, rotationRunTime, RotateMode.FastBeyond360));
         s.Append(transform.DOScale(Vector3.one, scaledRunTime)).OnComplete(FillingCompanents);
     }
 

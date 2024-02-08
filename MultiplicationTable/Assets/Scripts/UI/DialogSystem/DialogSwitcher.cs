@@ -14,8 +14,10 @@ public class DialogSwitcher {
     }
 
     public void ShowDialog(DialogTypes type) {
-        if (_activeDialog != null)
+        if (_activeDialog != null) {
+            _activeDialog.ResetPanels();
             _activeDialog.Show(false);
+        }
 
         _activeDialog = _uIManager.GetDialogByType(type);
         _showedDialogs.Add(_activeDialog);

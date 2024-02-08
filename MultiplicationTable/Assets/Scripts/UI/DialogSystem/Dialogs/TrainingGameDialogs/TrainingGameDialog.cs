@@ -21,5 +21,9 @@ public abstract class TrainingGameDialog : Dialog {
         PassedEquation.Clear();
     }
 
+    public override void ResetPanels() {
+        base.ResetPanels();
 
+        PassedEquation.Clear();
+    }
 }

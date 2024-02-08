@@ -11,8 +11,7 @@ public class CellsPanel : UIPanel {
     private const string ConfigsPath = "EnemyConfigs";
 
     public event Action<Cell> ActiveCellChanged;
-    public event Action<int> EmptyCellsCountChanged;
-
+ 
     [SerializeField] private RectTransform _cellsParent;
     [SerializeField] private List<Cell> _emptyCells;
 
@@ -37,7 +36,7 @@ public class CellsPanel : UIPanel {
         FillAllCells();
 
         _emptyCells = GetRandomCells(equationCount);
-        DisableRandonCells();
+        DisableRandomCells();
 
         OnCellSelected(_emptyCells[0]);
     }
@@ -66,16 +65,14 @@ public class CellsPanel : UIPanel {
     public void FillActiveCell(float delaySwitchingEquation = 0f) {
         ActiveCell.SwitchState(CellStates.Fill);
 
-        Invoke(nameof(ChangeEmptyCount), delaySwitchingEquation);
+        Invoke(nameof(ChangeEmptyCellsCount), delaySwitchingEquation);
     }
 
-    private void ChangeEmptyCount() {
+    private void ChangeEmptyCellsCount() {
         _emptyCells.Remove(ActiveCell);
 
         if (_emptyCells.Count > 0)
             OnCellSelected(_emptyCells[0]);
-
-        EmptyCellsCountChanged?.Invoke(_emptyCells.Count);
     }
 
     private void CreateCells(Color32[] pixels) {
@@ -118,7 +115,7 @@ public class CellsPanel : UIPanel {
         return emptyCells;
     }
 
-    private void DisableRandonCells() {
+    private void DisableRandomCells() {
         for (int i = 0; i < _emptyCells.Count; i++) {
             _emptyCells[i].SwitchState(CellStates.Empty);
         }

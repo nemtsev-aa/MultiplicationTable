@@ -24,6 +24,7 @@ public class DialogSwitcher {
 
     public void ShowPreviousDialog() {
         if (_showedDialogs.Count > 0) {
+            _activeDialog.ResetPanels();
             _activeDialog.Show(false);
             _showedDialogs.Remove(_activeDialog);
         }

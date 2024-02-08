@@ -16,13 +16,12 @@ public class DialogFactory {
             {typeof(SettingsDialog), nameof(SettingsDialog)},
             {typeof(HistoryDialog), nameof(HistoryDialog)},
             {typeof(DrawingByMultiplicationDialog), nameof(DrawingByMultiplicationDialog)},
-            {typeof(TimePressureDialog), nameof(TimePressureDialog)}
+            {typeof(TimePressureDialog), nameof(TimePressureDialog)},
+            {typeof(SurvivalDialog), nameof(SurvivalDialog)},
     };
 
     public DialogFactory(DiContainer container) {
         _container = container;
-
-        Debug.Log("DialogFactory init");
     }
 
     public void SetDialogsParent(RectTransform dialogsParent) => _dialogsParent = dialogsParent;

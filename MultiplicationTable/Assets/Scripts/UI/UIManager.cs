@@ -53,7 +53,8 @@ public class UIManager : MonoBehaviour, IDisposable {
                 { DialogTypes.Settings, _dialogFactory.GetDialog<SettingsDialog>()},
                 { DialogTypes.History, _dialogFactory.GetDialog<HistoryDialog>()},
                 { DialogTypes.DrawingByMultiplication, _dialogFactory.GetDialog<DrawingByMultiplicationDialog>()},
-                { DialogTypes.TimePressure, _dialogFactory.GetDialog<TimePressureDialog>()}
+                { DialogTypes.TimePressure, _dialogFactory.GetDialog<TimePressureDialog>()},
+                { DialogTypes.Survival, _dialogFactory.GetDialog<SurvivalDialog>()},
             };
 
         foreach (var iDialog in _dialogsDictionary.Values) {

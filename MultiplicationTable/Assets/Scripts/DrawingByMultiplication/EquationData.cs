@@ -7,10 +7,17 @@ public class EquationData {
         Multipliable = multipliable;
         Multiplier = multiplier;
     }
-    
-    [field: SerializeField] public int Multipliable { get; private set; }
-    [field: SerializeField] public int Multiplier { get; private set; }
-    [field: SerializeField] public Color BaseColor { get; set; }  
+
+    public EquationData(int multipliable, int multiplier, bool answer) {
+        Multipliable = multipliable;
+        Multiplier = multiplier;
+        Answer = answer;
+    }
+
+    public int Multipliable { get; private set; }
+    public int Multiplier { get; private set; }
+    public Color BaseColor { get; set; }  
     public int Result { get { return Multipliable * Multiplier; } }
-    public bool Answer { get; set; }
+    public bool Answer { get; private set; }
+
 }

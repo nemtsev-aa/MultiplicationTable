@@ -9,7 +9,6 @@ using Zenject;
 public class CellsPanel : UIPanel {
     private const string LargeConfig = "LargeConfig";
     private const string ConfigsPath = "EnemyConfigs";
-    private const float DelaySwitchingActiveCell = 1f;
 
     public event Action<Cell> ActiveCellChanged;
     public event Action<int> EmptyCellsCountChanged;
@@ -64,10 +63,19 @@ public class CellsPanel : UIPanel {
         }
     }
 
-    public void FillActiveCell() {
+    public void FillActiveCell(float delaySwitchingEquation = 0f) {
         ActiveCell.SwitchState(CellStates.Fill);
 
-        Invoke(nameof(SwitchActiveCell), DelaySwitchingActiveCell);
+        Invoke(nameof(ChangeEmptyCount), delaySwitchingEquation);
+    }
+
+    private void ChangeEmptyCount() {
+        _emptyCells.Remove(ActiveCell);
+
+        if (_emptyCells.Count > 0)
+            OnCellSelected(_emptyCells[0]);
+
+        EmptyCellsCountChanged?.Invoke(_emptyCells.Count);
     }
 
     private void CreateCells(Color32[] pixels) {
@@ -176,15 +184,6 @@ public class CellsPanel : UIPanel {
         ActiveCell = activeCell;
         ActiveCell.SwitchState(CellStates.Active);
         ActiveCellChanged?.Invoke(ActiveCell);
-    }
-
-    private void SwitchActiveCell() {
-        _emptyCells.Remove(ActiveCell);
-
-        if (_emptyCells.Count > 0)
-            OnCellSelected(_emptyCells[0]);
-
-        EmptyCellsCountChanged?.Invoke(_emptyCells.Count);
     }
 
     private void SwitchActiveCell(OffsetDirections offsetDirection) {

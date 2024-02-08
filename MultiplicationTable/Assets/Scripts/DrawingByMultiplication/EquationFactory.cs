@@ -47,7 +47,7 @@ public class EquationFactory {
         return _equations;
     }
 
-    private DifficultyLevelData GetDifficultyLevelDataByType(DifficultyLevelTypes type) {
+    public DifficultyLevelData GetDifficultyLevelDataByType(DifficultyLevelTypes type) {
         return _difficultyConfig.Configs.FirstOrDefault(config => config.Type == type);
     }
 

@@ -15,6 +15,7 @@ public class DialogMediator : IDisposable {
 
     private DrawingByMultiplicationDialog _drawingDialog;
     private TimePressureDialog _timePressureDialog;
+    private SurvivalDialog _survivalDialog;
 
     private DialogSwitcher _dialogSwitcher;
     private List<Dialog> _dialogs;
@@ -42,6 +43,7 @@ public class DialogMediator : IDisposable {
 
         _drawingDialog = _uIManager.GetDialogByType(DialogTypes.DrawingByMultiplication).GetComponent<DrawingByMultiplicationDialog>();
         _timePressureDialog = _uIManager.GetDialogByType(DialogTypes.TimePressure).GetComponent<TimePressureDialog>();
+        _survivalDialog = _uIManager.GetDialogByType(DialogTypes.Survival).GetComponent<SurvivalDialog>();
 
         _dialogs = new List<Dialog>() {
             _mainMenuDialog,
@@ -51,12 +53,14 @@ public class DialogMediator : IDisposable {
             _settingsDialog,
             _historyDialog,
             _drawingDialog,
-            _timePressureDialog
+            _timePressureDialog,
+            _survivalDialog
         };
 
         _trainingGameDialogs = new List<TrainingGameDialog>() {
             _drawingDialog,
-            _timePressureDialog
+            _timePressureDialog,
+            _survivalDialog
         };
     }
 
@@ -66,7 +70,6 @@ public class DialogMediator : IDisposable {
 
     private void AddListeners() {
         foreach (var iDialog in _dialogs) {
-            Debug.Log($"{iDialog.name}");
             iDialog.SettingsClicked += OnSettingsClicked;
             iDialog.ShareClicked += OnShareClicked;
             iDialog.HistoryClicked += OnHistoryClicked;

@@ -6,5 +6,6 @@ public enum DialogTypes {
     Settings,
     History,
     DrawingByMultiplication,
-    TimePressure
+    TimePressure,
+    Survival
 }

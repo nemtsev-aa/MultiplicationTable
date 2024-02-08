@@ -11,8 +11,6 @@ public class UICompanentsFactory {
     public UICompanentsFactory(DiContainer container, UICompanentPrefabs companents) {
         _container = container;
         _companents = companents.Prefabs;
-
-        Debug.Log("UICompanentsFactory init");
     }
 
     private UICompanent Companent => _visitor.Companent;

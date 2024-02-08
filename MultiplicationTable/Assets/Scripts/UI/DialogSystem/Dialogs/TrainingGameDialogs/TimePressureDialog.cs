@@ -82,7 +82,10 @@ public class TimePressureDialog : TrainingGameDialog {
     public override void PreparingForClosure() {
         bool gameResult = (EquationsCount > 0) ? true : false;
         
-        AttemptData data = new AttemptData(Data, _timeCounter.RemainingTime, gameResult, PassedEquation);
+        AttemptData data = new AttemptData(Data,
+            _timeCounter.RemainingTime,
+            gameResult,
+            PassedEquation);
         
         TrainingGameFinished?.Invoke(data);
     }
@@ -102,8 +105,12 @@ public class TimePressureDialog : TrainingGameDialog {
     }
 
     private void SetVerificationResult(bool result) {
-        CurrentEquation.Answer = result;
-        PassedEquation.Add(CurrentEquation);
+        var equation = new EquationData(
+            CurrentEquation.Multipliable,
+            CurrentEquation.Multiplier,
+            result);
+
+        PassedEquation.Add(equation);
     }
 
     private void GetRandomEquation() {

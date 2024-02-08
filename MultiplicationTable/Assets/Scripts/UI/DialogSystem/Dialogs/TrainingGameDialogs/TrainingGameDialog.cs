@@ -20,4 +20,6 @@ public abstract class TrainingGameDialog : Dialog {
         Data = data;
         PassedEquation.Clear();
     }
+
+
 }

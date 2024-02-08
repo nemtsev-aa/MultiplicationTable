@@ -1,30 +1,27 @@
 using System;
-using System.Collections.Generic;
 using Zenject;
 
-public class DrawingByMultiplicationDialog : TrainingGameDialog {
-    private const float DelaySwitchingEquation = 1f;
+public class SurvivalDialog : TrainingGameDialog {
+    private const float DelaySwitchingEquation = 0.5f;
 
     public override event Action<AttemptData> TrainingGameFinished;
     public override event Action<float, float> EquationsCountChanged;
 
     private TimerBar _timerBar;
     private EquationCountBar _equationCountBar;
-    private CellsPanel _cellsPanel;
     private EquationPanel _equationPanel;
     private MultiplierSelectionPanel _multipliersPanel;
 
-    private DrawingsConfig _drawings;
     private EquationFactory _equationFactory;
     private TimeCounter _timeCounter;
     private int _maxEquationCount;
+    private float _timeDuration;
 
     [Inject]
-    private void Construct(DrawingsConfig drawings, EquationFactory equationFactory, TimeCounter timeCounter) {
-        _drawings = drawings;
+    private void Construct(EquationFactory equationFactory, TimeCounter timeCounter) {
         _equationFactory = equationFactory;
-        TrainingGameType = TrainingGameTypes.Drawing;
-        DialogType = DialogTypes.DrawingByMultiplication;
+        TrainingGameType = TrainingGameTypes.Survival;
+        DialogType = DialogTypes.Survival;
 
         _timeCounter = timeCounter;
     }
@@ -35,49 +32,49 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         if (_timeCounter == null)
             return;
 
-        _timeCounter.SetWatchStatus(value);
+        _timeCounter.SetTimerStatus(true);
     }
-    
+
     public override void SetTrainingGameData(TrainingGameData data) {
         base.SetTrainingGameData(data);
 
         Equations = _equationFactory.GetEquations(Data.Multipliers, Data.DifficultyLevelType);
-        _maxEquationCount = EquationsCount;
+        _maxEquationCount = Equations.Count;
 
-        _cellsPanel.Init(GetRandonDrawingData(), _maxEquationCount);
-        
         _equationCountBar.Init(this, _maxEquationCount);
         _equationPanel.Init(_multipliersPanel);
+
+        GetRandomEquation();
+
+        _multipliersPanel.Show(true);
+
+        _timeDuration = GetTimeDurationByDifficultyLevelType(Data.DifficultyLevelType);
+        _timeCounter.SetTimeValue(_timeDuration);
     }
 
-    public override void InitializationPanels() { 
+    public override void InitializationPanels() {
         _timerBar = GetPanelByType<TimerBar>();
         _timerBar.Init(_timeCounter);
 
         _equationCountBar = GetPanelByType<EquationCountBar>();
-        _cellsPanel = GetPanelByType<CellsPanel>();
         _equationPanel = GetPanelByType<EquationPanel>();
 
         _multipliersPanel = GetPanelByType<MultiplierSelectionPanel>();
         var multipliersConfig = new MultipliersConfig(_equationFactory.Multipliers);
-        _multipliersPanel.Init(multipliersConfig, true);
+        _multipliersPanel.Init(multipliersConfig, false);
     }
 
     public override void AddListeners() {
         base.AddListeners();
 
-        _cellsPanel.ActiveCellChanged += OnActiveCellChanged;
-        _cellsPanel.EmptyCellsCountChanged += OnEmptyCellsCountChanged;
-
+        _timeCounter.TimeIsOver += OnTimeIsOver;
         _equationPanel.EquationVerificatedChanged += OnEquationVerificatedChanged;
     }
 
     public override void RemoveListeners() {
         base.RemoveListeners();
 
-        _cellsPanel.ActiveCellChanged -= OnActiveCellChanged;
-        _cellsPanel.EmptyCellsCountChanged -= OnEmptyCellsCountChanged;
-
+        _timeCounter.TimeIsOver -= OnTimeIsOver;
         _equationPanel.EquationVerificatedChanged -= OnEquationVerificatedChanged;
     }
 
@@ -87,29 +84,24 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         _timeCounter.Reset();
         PassedEquation.Clear();
     }
-    
+
     public override void PreparingForClosure() {
         bool gameResult = (EquationsCount > 0) ? true : false;
-        
+
         AttemptData data = new AttemptData(Data,
             _timeCounter.RemainingTime,
             gameResult,
             PassedEquation);
 
-        _cellsPanel.Reset();
         TrainingGameFinished?.Invoke(data);
     }
 
-    private DrawingData GetRandonDrawingData() {
-        return _drawings.Drawings[UnityEngine.Random.Range(0, _drawings.Drawings.Count)];
+    private float GetTimeDurationByDifficultyLevelType(DifficultyLevelTypes difficultyLevelType) {
+        DifficultyLevelData data = _equationFactory.GetDifficultyLevelDataByType(difficultyLevelType);
+        return data.TimeDuration;
     }
 
-    private void OnActiveCellChanged(Cell activeCell) {
-        CurrentEquation = Equations[UnityEngine.Random.Range(0, Equations.Count)];
-        CurrentEquation.BaseColor = activeCell.FillStateColor;
-
-        _equationPanel.ShowEquation(CurrentEquation);
-    }
+    private void OnTimeIsOver() => PreparingForClosure();
 
     private void OnEquationVerificatedChanged(bool result) {
         SetVerificationResult(result);
@@ -119,8 +111,8 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
             EquationsCountChanged?.Invoke(Equations.Count, _maxEquationCount);
         }
 
-        if (EquationsCount > 0) 
-            _cellsPanel.FillActiveCell(DelaySwitchingEquation);
+        if (EquationsCount > 0)
+            Invoke(nameof(GetRandomEquation), DelaySwitchingEquation);
         else
             Invoke(nameof(PreparingForClosure), DelaySwitchingEquation);
     }
@@ -134,12 +126,9 @@ public class DrawingByMultiplicationDialog : TrainingGameDialog {
         PassedEquation.Add(equation);
     }
 
-    private void OnEmptyCellsCountChanged(int emptyCellsCount) {
-        if (emptyCellsCount == 0) {
-            PreparingForClosure();
-            return;
-        }
-
-        OnActiveCellChanged(_cellsPanel.ActiveCell);
+    private void GetRandomEquation() {
+        CurrentEquation = Equations[UnityEngine.Random.Range(0, Equations.Count)];
+        _equationPanel.ShowEquation(CurrentEquation);
+        _timeCounter.SetTimeValue(_timeDuration);
     }
 }

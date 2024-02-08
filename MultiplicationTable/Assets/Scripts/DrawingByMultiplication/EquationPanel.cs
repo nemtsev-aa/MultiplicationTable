@@ -11,8 +11,8 @@ public class EquationPanel : UIPanel {
     private int _maxEquationCount;
 
     public void Init(MultiplierSelectionPanel multipliersPanel) {
-        if (_multipliersPanel != null)
-            return;
+        //if (_multipliersPanel != null)
+        //    return;
 
         _multipliersPanel = multipliersPanel;
         AddListeners();

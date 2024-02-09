@@ -10,31 +10,31 @@ public class NumberView : UICompanent {
     [SerializeField] private TextMeshProUGUI _labelValue;
 
     private NumberViewConfig _config;
-
+    
     public void Init(NumberViewConfig config) {
         _config = config;
 
-        CreateSubscribes();
+        AddListeners();
         FillingCompanents();
     }
 
-    private void CreateSubscribes() {
-        _numberButton.onClick.AddListener(NumberButtonClick);
+    private void AddListeners() {
+        _numberButton.onClick.AddListener(SetMultiplier);
     }
 
-    private void RemoveSubscribes() {
-        _numberButton.onClick.RemoveListener(NumberButtonClick);
+    private void RemoveListeners() {
+        _numberButton.onClick.RemoveListener(SetMultiplier);
     }
 
-    private void FillingCompanents() {
+    private void SetMultiplier() =>
+        ViewSelected?.Invoke(_config.Multiplier);
+
+    private void FillingCompanents() =>
         _labelValue.text = $"{_config.Multiplier}";
-    }
-
-    private void NumberButtonClick() => ViewSelected?.Invoke(_config.Multiplier);
-
+    
     public override void Dispose() {
         base.Dispose();
 
-        RemoveSubscribes();
+        RemoveListeners();
     }
 }

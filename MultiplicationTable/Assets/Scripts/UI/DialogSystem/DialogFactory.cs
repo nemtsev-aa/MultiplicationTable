@@ -18,6 +18,7 @@ public class DialogFactory {
             {typeof(DrawingByMultiplicationDialog), nameof(DrawingByMultiplicationDialog)},
             {typeof(TimePressureDialog), nameof(TimePressureDialog)},
             {typeof(SurvivalDialog), nameof(SurvivalDialog)},
+            {typeof(PuzzleDialog), nameof(PuzzleDialog)},
     };
 
     public DialogFactory(DiContainer container) {

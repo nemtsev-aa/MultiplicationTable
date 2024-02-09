@@ -37,6 +37,7 @@ public class MultiplierSelectionPanel : UIPanel {
 
     private void CreateNumberViews() {
         _numberViews = new List<NumberView>();
+        //var mainCanvas = GetComponentInParent<Canvas>();
 
         foreach (var iConfig in _config.Multipliers) {
             NumberViewConfig config = new NumberViewConfig(iConfig);

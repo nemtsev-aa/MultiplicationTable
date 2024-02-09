@@ -29,4 +29,13 @@ public class UICompanentVisitor : ICompanentVisitor {
 
     public void Visit(TrainingGameSelectorConfig gameSelectorConfig)
         => Companent = _companents.FirstOrDefault(companent => companent is TrainingGameSelector);
+    
+    public void Visit(EquationBuilderViewConfig equationBuilderViewConfig)
+        => Companent = _companents.FirstOrDefault(companent => companent is EquationBuilderView);
+    
+    public void Visit(EquationItemConfig equationItemConfig)
+        => Companent = _companents.FirstOrDefault(companent => companent is EquationItem);
+
+    public void Visit(EquationSlotConfig equationSlotConfig)
+        => Companent = _companents.FirstOrDefault(companent => companent is EquationSlot);
 }

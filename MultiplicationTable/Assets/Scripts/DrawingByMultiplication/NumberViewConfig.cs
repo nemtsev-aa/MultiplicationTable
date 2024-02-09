@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class NumberViewConfig : UICompanentConfig {
     public NumberViewConfig(int multiplier) {
         Multiplier = multiplier;

@@ -57,7 +57,9 @@ public class EquationBuildersPanel : UIPanel {
             EquationBuilderView newView = _factory.Get<EquationBuilderView>(config, _parent);
             EquationSlot multipliableSlot = _factory.Get<EquationSlot>(slotConfig, _parent);
             multipliableSlot.Init(slotConfig);
+            multipliableSlot.gameObject.name = $"BuilderView{_builderViews.Count}_MultipliableSlot";
             EquationSlot multiplierSlot = _factory.Get<EquationSlot>(slotConfig, _parent);
+            multiplierSlot.gameObject.name = $"BuilderView{_builderViews.Count}_Multiplier";
             multiplierSlot.Init(slotConfig);
 
             newView.Init(config, multipliableSlot, multiplierSlot);

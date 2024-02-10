@@ -43,7 +43,7 @@ public class EquationItemsPanel : UIPanel {
         base.RemoveListeners();
 
         foreach (var item in _equationItems) {
-            item.ParentCleared -= OnParentCleared;
+            //item.ParentCleared -= OnParentCleared;
         }
     }
 
@@ -66,20 +66,20 @@ public class EquationItemsPanel : UIPanel {
         List<EquationItem> equationItems = new List<EquationItem>();
 
         foreach (var iEquation in _equations) {
-            equationItems.Add(GetEquationItem(iEquation.Multipliable, mainCanvas));
-            equationItems.Add(GetEquationItem(iEquation.Multiplier, mainCanvas));
+            equationItems.Add(GetEquationItem(iEquation.Multipliable, mainCanvas, equationItems.Count));
+            equationItems.Add(GetEquationItem(iEquation.Multiplier, mainCanvas, equationItems.Count));
         }
 
         _equationItems = Shuffle(equationItems);
     }
 
-    private EquationItem GetEquationItem(int value, Canvas mainCanvas) {
-        EquationItemConfig config = new EquationItemConfig(value, mainCanvas, _slotsParent);
+    private EquationItem GetEquationItem(int value, Canvas mainCanvas, int index) {
+        EquationItemConfig config = new EquationItemConfig(value, mainCanvas);
 
         EquationItem newItem = _factory.Get<EquationItem>(config, _itemsParent);
         newItem.Init(config);
-        newItem.ParentCleared += OnParentCleared;
-
+        newItem.gameObject.name = $"Item{index}_{value}";
+        
         return newItem;
     }
 
@@ -108,16 +108,17 @@ public class EquationItemsPanel : UIPanel {
             EquationSlotConfig config = new EquationSlotConfig(item);
             EquationSlot newSlot = _factory.Get<EquationSlot>(config, _slotsParent);
             newSlot.Init(config);
+            newSlot.gameObject.name = $"ItemsPanelSlot{_equationSlots.Count}";
 
             _equationSlots.Add(newSlot);
         }
     }
 
-    private void OnParentCleared(EquationItem item) {
-        item.SetSlot(GetEmptySlot());
-    }
+    //private void OnParentCleared(EquationItem item) {
+    //    item.SetSlot(GetEmptySlot());
+    //}
 
-    private EquationSlot GetEmptySlot() {
-        return _equationSlots.FirstOrDefault(slot => slot.CurrentItem == null);
-    }
+    //private EquationSlot GetEmptySlot() {
+    //    return _equationSlots.FirstOrDefault(slot => slot.CurrentItem == null);
+    //}
 }

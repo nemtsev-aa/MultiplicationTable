@@ -12,19 +12,44 @@ public class EquationItem : UICompanent, IDragHandler, IBeginDragHandler, IEndDr
     [SerializeField] private TextMeshProUGUI _labelValue;
 
     private RectTransform _rectTransform;
-    private Transform _defaultTransform;
     private CanvasGroup _canvasGroup;
-
     private EquationItemConfig _config;
-    private float _scaleFactor;
 
+    private EquationSlot _slot;
+    private Transform _parentAfterDrag;
+
+    private float _scaleFactor;
     private Color _defaultColor;
     
-    private EquationSlot _slot;
-
 
     public int Value => _config.Value;
-    public EquationSlot Slot { get; set; }
+    
+    public EquationSlot Slot {
+        get {
+            return _slot;
+        }
+        set {
+            if (value.Equals(_slot))
+                return;
+
+            _slot = value;
+            Debug.Log($"{gameObject.name}: CurrentSlot: {Slot.gameObject.name}");
+        }
+    }
+
+    public Transform ParentAfterDrag {
+        get {
+            return _parentAfterDrag;
+        }
+        set {
+            if (value.Equals(transform))
+                return;
+
+            ClearItemInBeforeSlot();
+            _parentAfterDrag = value;
+            SetParentAfterDrag();
+        }
+    }
 
     public void Init(EquationItemConfig config) {
         _config = config;
@@ -45,13 +70,11 @@ public class EquationItem : UICompanent, IDragHandler, IBeginDragHandler, IEndDr
     public void OnBeginDrag(PointerEventData eventData) {
         if (_config.MainCanvas == false)
             return;
-
-        _slot = Slot;
-
-        Slot = null;
-
-        _rectTransform.SetParent(_config.RectTransform);
+        
+        _parentAfterDrag = transform.parent;
+        _rectTransform.SetParent(transform.root);
         _rectTransform.parent.SetAsLastSibling();
+        
         _canvasGroup.blocksRaycasts = false;
 
         SetColor(_defaultColor);
@@ -62,29 +85,59 @@ public class EquationItem : UICompanent, IDragHandler, IBeginDragHandler, IEndDr
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        if (Slot == null) 
-            Slot = _slot;
+        SetParentAfterDrag();
+    }
 
-        _rectTransform.SetParent(Slot.transform);
+    private void SetParentAfterDrag() {
+
+        transform.SetParent(_parentAfterDrag);
+        SetItemInAfterSlot();
+
         _rectTransform.localPosition = Vector3.zero;
         _canvasGroup.blocksRaycasts = true;
+        
+        SetColor(Color.white);
     }
-
-    public void SetSlot(EquationSlot slot) {
-        if (Slot != null && Slot.Equals(slot))
+    
+    private void ClearItemInBeforeSlot() {
+        if (_parentAfterDrag == null)
             return;
 
-        ParentChanged?.Invoke(_slot);
+        var slot = GetSlotByTransform(_parentAfterDrag);
 
-        Slot = slot;
-
-        _defaultTransform = Slot.transform;
-        transform.SetParent(_defaultTransform);
-        transform.localPosition = Vector3.zero;
-
-        SetColor(Color.white);
-        
+        if (slot != null)
+            slot.CurrentItem = null;
     }
+    
+    private void SetItemInAfterSlot() {
+        if (transform.parent.TryGetComponent(out EquationSlot slot)) {
+            if (Slot != null && Slot.Equals(slot) == true)
+                return;
+
+            Slot = slot;
+            Slot.CurrentItem = this;
+        }
+    }
+    private EquationSlot GetSlotByTransform(Transform parent) {
+        if (parent.TryGetComponent(out EquationSlot slot))
+            return slot;
+        else
+            return null;
+    }
+
+    //public void SetSlot(EquationSlot slot) {
+    //    if (Slot != null && Slot.Equals(slot))
+    //        return;
+
+    //    Slot = slot;
+
+    //    _defaultTransform = Slot.transform;
+    //    //transform.SetParent(_defaultTransform);
+    //    transform.localPosition = Vector3.zero;
+
+    //    SetColor(Color.white);
+
+    //}
 
     #endregion
 

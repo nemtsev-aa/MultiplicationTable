@@ -9,9 +9,28 @@ public class EquationSlot : UICompanent, IDropHandler {
     [SerializeField] private Image _backgroundImage;
 
     private EquationSlotConfig _config;
+    private EquationItem _currentItem;
 
-    public EquationItem CurrentItem { get; private set; }
+    public EquationItem CurrentItem {
+        get {
+            return _currentItem;
+        }
+        set {
+            if (value == null) {
+                _currentItem = null;
+                _backgroundImage.gameObject.SetActive(true);
+                Debug.Log($"{gameObject.name}: CurrentItem: NULL" );
+                return;
+            }
 
+            if (value.Equals(_currentItem))
+                return;
+
+            _currentItem = value;
+            _backgroundImage.gameObject.SetActive(false);
+            Debug.Log($"{gameObject.name}: CurrentItem: {_currentItem.gameObject.name}");
+        }
+    }
 
     public void Init(EquationSlotConfig config) {
         _config = config;
@@ -22,25 +41,28 @@ public class EquationSlot : UICompanent, IDropHandler {
     public void OnDrop(PointerEventData eventData) {
         var otherNumberTransform = eventData.pointerDrag.transform;
 
-        if (otherNumberTransform.TryGetComponent(out EquationItem item)) {
-            if (CurrentItem != null && CurrentItem.Equals(item))
-                return;
-
+        if (otherNumberTransform.TryGetComponent(out EquationItem item)) 
             SetItem(item);
-        }
+        
     }
 
     public void SetItem(EquationItem item) {
         if (item == null)
             return;
 
-        item.SetSlot(this);
-        item.ParentChanged += OnParentChanged;
+        if (item.ParentAfterDrag == transform)
+            return;
+        
+        if (CurrentItem != null) {
+            CurrentItem.ParentAfterDrag = item.ParentAfterDrag;
+        }
 
-        CurrentItem = item;
+        item.ParentAfterDrag = transform;
+        item.Slot = this;
+
+        //CurrentItem = item;
+
         ItemValueChanged?.Invoke();
-
-        _backgroundImage.gameObject.SetActive(false);
     }
 
     private void OnParentChanged(EquationSlot slot) {

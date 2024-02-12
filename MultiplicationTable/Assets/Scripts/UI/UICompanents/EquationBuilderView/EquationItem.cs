@@ -105,8 +105,12 @@ public class EquationItem : UICompanent, IDragHandler, IBeginDragHandler, IEndDr
 
         var slot = GetSlotByTransform(_parentAfterDrag);
 
-        if (slot != null)
-            slot.CurrentItem = null;
+        if (Slot.Equals(slot) == true) {
+            if (slot.CurrentItem == this) 
+                slot.CurrentItem = null;
+            else
+                return;
+        } 
     }
     
     private void SetItemInAfterSlot() {

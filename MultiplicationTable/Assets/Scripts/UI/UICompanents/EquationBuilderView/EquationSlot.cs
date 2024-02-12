@@ -2,11 +2,13 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class EquationSlot : UICompanent, IDropHandler {
     public event Action ItemValueChanged;
 
     [SerializeField] private Image _backgroundImage;
+    private float _duration = 0.05f;
 
     private EquationSlotConfig _config;
     private EquationItem _currentItem;
@@ -18,8 +20,7 @@ public class EquationSlot : UICompanent, IDropHandler {
         set {
             if (value == null) {
                 _currentItem = null;
-                _backgroundImage.gameObject.SetActive(true);
-                Debug.Log($"{gameObject.name}: CurrentItem: NULL" );
+                BackgroundImageFadeAnimation(true);
                 return;
             }
 
@@ -27,9 +28,24 @@ public class EquationSlot : UICompanent, IDropHandler {
                 return;
 
             _currentItem = value;
-            _backgroundImage.gameObject.SetActive(false);
-            Debug.Log($"{gameObject.name}: CurrentItem: {_currentItem.gameObject.name}");
+            BackgroundImageFadeAnimation(false);
         }
+    }
+
+    private void BackgroundImageFadeAnimation(bool status) {
+        float fadeValue = (status == true) ? 0.5f : 0f;
+
+        var s = DOTween.Sequence();
+        var scaledRunTime = _duration;
+        var fadedTime = _duration;
+
+        Transform transform = _backgroundImage.transform;
+        s.Append(transform.DOScale(transform.localScale.x * 0.5f, scaledRunTime));
+        s.Append(_backgroundImage.DOFade(fadeValue, fadedTime));
+        s.Append(transform.DOScale(Vector3.one, scaledRunTime));
+
+        _backgroundImage.raycastTarget = status;
+        //Debug.Log($"{gameObject.name}: CurrentItem: {_currentItem.gameObject.name}");
     }
 
     public void Init(EquationSlotConfig config) {
@@ -53,14 +69,11 @@ public class EquationSlot : UICompanent, IDropHandler {
         if (item.ParentAfterDrag == transform)
             return;
         
-        if (CurrentItem != null) {
+        if (CurrentItem != null) 
             CurrentItem.ParentAfterDrag = item.ParentAfterDrag;
-        }
-
+        
         item.ParentAfterDrag = transform;
         item.Slot = this;
-
-        //CurrentItem = item;
 
         ItemValueChanged?.Invoke();
     }

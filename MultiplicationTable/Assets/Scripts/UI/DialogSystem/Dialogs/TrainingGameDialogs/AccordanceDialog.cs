@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Zenject;
 
 public class AccordanceDialog : TrainingGameDialog {
@@ -11,19 +8,22 @@ public class AccordanceDialog : TrainingGameDialog {
     public override event Action<float, float> EquationsCountChanged;
 
     private EquationCountBar _equationCountBar;
-
+    private AccordancePanel _accordancePanel;
 
     private EquationFactory _equationFactory;
     private TimeCounter _timeCounter;
+    //private LineSpawner _lineSpawner;
+
     private int _maxEquationCount;
 
     [Inject]
     private void Construct(EquationFactory equationFactory, TimeCounter timeCounter) {
         _equationFactory = equationFactory;
-        TrainingGameType = TrainingGameTypes.Puzzles;
-        DialogType = DialogTypes.Puzzle;
+        TrainingGameType = TrainingGameTypes.Accordance;
+        DialogType = DialogTypes.Accordance;
 
         _timeCounter = timeCounter;
+        //_lineSpawner = lineSpawner;
     }
 
     public override void Show(bool value) {
@@ -42,15 +42,16 @@ public class AccordanceDialog : TrainingGameDialog {
         _maxEquationCount = Equations.Count;
 
         _equationCountBar.Init(this, _maxEquationCount);
-
+        _accordancePanel.Init(Equations, false);
+        //_lineSpawner.Init(_accordancePanel.GetConnectPointTransforms());
     }
 
     public override void InitializationPanels() {
         _equationCountBar = GetPanelByType<EquationCountBar>();
-
+        _accordancePanel = GetPanelByType<AccordancePanel>();
     }
-    
+
     public override void PreparingForClosure() {
-        
+
     }
 }

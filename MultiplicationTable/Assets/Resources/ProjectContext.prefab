@@ -83,3 +83,5 @@ MonoBehaviour:
   _drawingsConfig: {fileID: 11400000, guid: 1fc4a669261461f42b082727c3b72edd, type: 2}
   _trainingGameConfigs: {fileID: 11400000, guid: 2743f502982b79c4fa177cb9b625e06b,
     type: 2}
+  _linetPrefab: {fileID: 5124423701266386650, guid: d7e9171bf6d23294eb32134cfd1e75e5,
+    type: 3}

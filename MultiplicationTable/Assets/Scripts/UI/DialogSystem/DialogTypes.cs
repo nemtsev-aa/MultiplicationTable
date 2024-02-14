@@ -8,5 +8,6 @@ public enum DialogTypes {
     DrawingByMultiplication,
     TimePressure,
     Survival,
-    Puzzle
+    Puzzle,
+    Accordance,
 }

@@ -2,14 +2,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MultipliersCompositionView : UICompanent {
+public class MultipliersResultView : UICompanent {
     [SerializeField] private TextMeshProUGUI _labelValue;
     [SerializeField] private Image _frameImage;
     [SerializeField] private ConnectStatusView _connectStatus;
 
-    private MultipliersCompositionViewConfig _config;
-    private LineSpawner _lineSpawner;
-
+    private MultipliersResultConfig _config;
+ 
     private Color _defaultColor;
 
     private Color _trueVerificationColor = Color.blue;
@@ -17,22 +16,24 @@ public class MultipliersCompositionView : UICompanent {
     private Color _frameColor;
 
     public Color FrameColor => _frameColor;
-    public Transform ConnectPointTransform => _connectStatus.ConnectPoint;
+    public Vector3 ConnectPointPosition => _connectStatus.ConnectPoint.position;
 
-    public void Init(MultipliersCompositionViewConfig config) {
+    public void Init(MultipliersResultConfig config) {
         _config = config;
 
         FillingCompanents();
+    }
+
+    public void SetColor(Color color) {
+
     }
 
     private void FillingCompanents() {
         _defaultColor = _frameImage.color;
         _frameColor = _defaultColor;
 
-        _labelValue.text = $"{_config.Data.Multipliable}X{_config.Data.Multiplier}";
+        _labelValue.text = $"{_config.Result}"; 
     }
 
-    private void OnMouseDown() {
-        _lineSpawner.StartLine(_connectStatus.ConnectPoint.position);
-    }
+
 }

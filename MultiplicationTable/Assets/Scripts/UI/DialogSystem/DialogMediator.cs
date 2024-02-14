@@ -17,6 +17,7 @@ public class DialogMediator : IDisposable {
     private TimePressureDialog _timePressureDialog;
     private SurvivalDialog _survivalDialog;
     private PuzzleDialog _puzzleDialog;
+    private AccordanceDialog _accordanceDialog;
 
     private DialogSwitcher _dialogSwitcher;
     private List<Dialog> _dialogs;
@@ -46,6 +47,7 @@ public class DialogMediator : IDisposable {
         _timePressureDialog = _uIManager.GetDialogByType(DialogTypes.TimePressure).GetComponent<TimePressureDialog>();
         _survivalDialog = _uIManager.GetDialogByType(DialogTypes.Survival).GetComponent<SurvivalDialog>();
         _puzzleDialog = _uIManager.GetDialogByType(DialogTypes.Puzzle).GetComponent<PuzzleDialog>();
+        _accordanceDialog = _uIManager.GetDialogByType(DialogTypes.Accordance).GetComponent<AccordanceDialog>();
 
         _dialogs = new List<Dialog>() {
             _mainMenuDialog,
@@ -57,14 +59,16 @@ public class DialogMediator : IDisposable {
             _drawingDialog,
             _timePressureDialog,
             _survivalDialog,
-            _puzzleDialog
+            _puzzleDialog,
+            _accordanceDialog
         };
 
         _trainingGameDialogs = new List<TrainingGameDialog>() {
             _drawingDialog,
             _timePressureDialog,
             _survivalDialog,
-            _puzzleDialog
+            _puzzleDialog,
+            _accordanceDialog
         };
     }
 

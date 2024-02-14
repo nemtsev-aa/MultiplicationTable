@@ -1,9 +1,10 @@
 public class MultipliersCompositionViewConfig : UICompanentConfig {
-    private EquationData _data;
-
+ 
     public MultipliersCompositionViewConfig(EquationData data) {
-        _data = data;
+        Data = data;
     }
+
+    public EquationData Data { get; private set; }
 
     public override void OnValidate() {
 

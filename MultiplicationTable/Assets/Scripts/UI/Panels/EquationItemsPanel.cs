@@ -41,10 +41,6 @@ public class EquationItemsPanel : UIPanel {
 
     public override void RemoveListeners() {
         base.RemoveListeners();
-
-        foreach (var item in _equationItems) {
-            //item.ParentCleared -= OnParentCleared;
-        }
     }
 
     public override void Reset() {

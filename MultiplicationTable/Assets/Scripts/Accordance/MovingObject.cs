@@ -1,29 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MovingObject : MonoBehaviour {
-    [SerializeField] private LineSpawner _drawing;
-    [SerializeField] private float _speed = 10f;
+    private Line _line;
+    private float _speed = 10f;
 
     private Vector3[] _positions;
     private int _moveIndex = 0;
     private bool _startMovement = false;
-    
 
-    private void OnMouseDown() {
-        _drawing.StartLine(transform.position);
-    }
+    public void Init(Line line, float speed) {
+        _line = line;
+        _speed = speed;
 
-    private void OnMouseDrag() {
-        _drawing.UpdateLine();
-    }
+        _positions = new Vector3[_line.Renderer.positionCount];
+        _line.Renderer.GetPositions(_positions);
 
-    private void OnMouseUp() {
-        _positions = new Vector3[_drawing.Renderer.positionCount];
-        _drawing.Renderer.GetPositions(_positions);
-        
-        //_startMovement = true;
+        _startMovement = true;
     }
 
     private void Update() {
@@ -32,11 +24,11 @@ public class MovingObject : MonoBehaviour {
             transform.position = Vector2.MoveTowards(transform.position, currentPosition, _speed * Time.deltaTime);
 
             float distance = Vector2.Distance(currentPosition, transform.position);
-            
+
             if (distance <= 0.05f)
                 _moveIndex++;
 
-            if (_moveIndex > _positions.Length - 1) 
+            if (_moveIndex > _positions.Length - 1)
                 _startMovement = false;
         }
     }

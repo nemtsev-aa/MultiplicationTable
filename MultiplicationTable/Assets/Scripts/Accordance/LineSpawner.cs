@@ -1,64 +1,61 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class LineSpawner : MonoBehaviour {
-    [SerializeField] private Pointer _pointer;
-    [SerializeField] private float _minDistance = 0.1f;
+    private List<Transform> _startPoints;
+    private Transform _linesParent;
+    private Pointer _pointer;
 
     private LineFactory _lineFactory;
     private Line _currentLine;
     private List<Line> _lines;
 
-    private Vector3 _previousePosition;
-
     public LineRenderer Renderer => _currentLine.Renderer;
 
-
-    private void Start() {
-        Init();
+    [Inject]
+    public void Construct(LineFactory lineFactory) {
+        _lineFactory = lineFactory;
     }
 
-    public void Init() {
-        _previousePosition = transform.position;
+    public void Init(List<Transform> startPoints) {
+        _startPoints = startPoints;
+
+        _linesParent = transform.GetChild(0);
+        _pointer = GetComponentInChildren<Pointer>();
+
+        StartSpawn();
     }
 
-    public void SetCurretLine(Vector3 startPoint) {
-        _currentLine = GetLineByStartPoint(startPoint);
+    private void StartSpawn() {
+        if (_startPoints.Count == 0)
+            throw new ArgumentNullException($"LineSpawner: StartPoint list is empty!");
+
+        _lines = new List<Line>();
+
+        foreach (var iPoint in _startPoints) {
+            Line newLine = _lineFactory.Get(_linesParent);
+            newLine.Init(iPoint);
+            
+            newLine.LineCreated += OnLineCreated;
+            newLine.LineUpdated += OnLineUpdated;
+
+            _lines.Add(newLine);
+        }
     }
 
     public void StartLine(Vector2 position) {
-
-        _currentLine = _lineFactory.Get(transform);
-        _currentLine.Init();
-
-        Renderer.positionCount = 1;
-        Renderer.SetPosition(0, position);
+        _currentLine = GetLineByStartPoint(position);
     }
 
-    public void UpdateLine() {
-        if (Input.GetMouseButton(0)) {
-            _pointer.enabled = true;
+    private void OnLineUpdated() {
+        _pointer.enabled = true;
+    }
 
-            Vector3 currentPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            currentPosition.z = 0f;
-
-            if (Vector3.Distance(currentPosition, _previousePosition) > _minDistance) {
-                if (_previousePosition == transform.position) {
-                    Renderer.SetPosition(0, currentPosition);
-                }
-                else {
-                    Renderer.positionCount++;
-                    Renderer.SetPosition(Renderer.positionCount - 1, currentPosition);
-                }
-
-                _previousePosition = currentPosition;
-            }
-        }
-        else {
-            _pointer.enabled = false;
-            _lines.Add(_currentLine);
-        }
+    private void OnLineCreated() {
+        
     }
 
     private Line GetLineByStartPoint(Vector3 point) {

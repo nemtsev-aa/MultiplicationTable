@@ -38,4 +38,10 @@ public class UICompanentVisitor : ICompanentVisitor {
 
     public void Visit(EquationSlotConfig equationSlotConfig)
         => Companent = _companents.FirstOrDefault(companent => companent is EquationSlot);
+
+    public void Visit(MultipliersCompositionViewConfig compositionViewConfig)
+        => Companent = _companents.FirstOrDefault(companent => companent is MultipliersCompositionView);
+
+    public void Visit(MultipliersResultConfig resultViewConfig)
+        => Companent = _companents.FirstOrDefault(companent => companent is MultipliersResultView);
 }

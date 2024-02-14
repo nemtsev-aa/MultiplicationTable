@@ -8,6 +8,7 @@ public class GlobalInstaller : MonoInstaller {
     [SerializeField] private QuestionsConfig _questionsConfig;
     [SerializeField] private DrawingsConfig _drawingsConfig;
     [SerializeField] private TrainingGameConfigs _trainingGameConfigs;
+    
 
     public override void InstallBindings() {
         BuildModsConfig();
@@ -16,6 +17,7 @@ public class GlobalInstaller : MonoInstaller {
         BuildDifficultyLevelsConfig();
         BuildTrainingGameConfigs();
         BindUICompanentsConfig();
+        
         BindFactories();
         BindTimeCounter();
     }
@@ -66,7 +68,6 @@ public class GlobalInstaller : MonoInstaller {
     private void BindFactories() {
         Container.Bind<DialogFactory>().AsSingle();
         Container.Bind<UICompanentsFactory>().AsSingle();
-        Container.Bind<LineFactory>().AsSingle();
     }
 
     private void BindTimeCounter() {

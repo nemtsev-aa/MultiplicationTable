@@ -56,6 +56,7 @@ public class UIManager : MonoBehaviour, IDisposable {
                 { DialogTypes.TimePressure, _dialogFactory.GetDialog<TimePressureDialog>()},
                 { DialogTypes.Survival, _dialogFactory.GetDialog<SurvivalDialog>()},
                 { DialogTypes.Puzzle, _dialogFactory.GetDialog<PuzzleDialog>()},
+                { DialogTypes.Accordance, _dialogFactory.GetDialog<AccordanceDialog>()},
             };
 
         foreach (var iDialog in _dialogsDictionary.Values) {

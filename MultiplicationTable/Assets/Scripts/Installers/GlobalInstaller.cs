@@ -66,6 +66,7 @@ public class GlobalInstaller : MonoInstaller {
     private void BindFactories() {
         Container.Bind<DialogFactory>().AsSingle();
         Container.Bind<UICompanentsFactory>().AsSingle();
+        Container.Bind<LineFactory>().AsSingle();
     }
 
     private void BindTimeCounter() {

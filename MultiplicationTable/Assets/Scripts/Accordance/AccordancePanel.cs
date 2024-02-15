@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,18 +9,22 @@ public class AccordancePanel : UIPanel {
     [SerializeField] private RectTransform _resultParent;
 
     private UICompanentsFactory _factory;
+    private MovementHandler _movementHandler;
     private LineSpawner _lineSpawner;
     private List<MultipliersCompositionView> _compositionViews;
     private List<MultipliersResultView> _resultViews;
 
     private List<EquationData> _equations;
     private bool _hideAfterSelection;
+    private Line _currentLine;
 
 
+    private Vector3 MousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
     [Inject]
-    private void Construct(UICompanentsFactory companentsFactory, LineSpawner lineSpawner) {
+    private void Construct(UICompanentsFactory companentsFactory, MovementHandler movementHandler, LineSpawner lineSpawner) {
         _factory = companentsFactory;
+        _movementHandler = movementHandler;
         _lineSpawner = lineSpawner;
     }
 
@@ -29,19 +34,30 @@ public class AccordancePanel : UIPanel {
 
         CreateCompositionViews();
         CreateResultViews();
+
+        AddListeners();
+
         Show(!hideAfterSelection);
+    }
+
+    public override void AddListeners() {
+        base.AddListeners();
+
+        _movementHandler.CompositionViewSelected += OnCompositionViewSelected;
+        _movementHandler.Dragged += OnDragged;
+        _movementHandler.ResultViewSelected += OnResultViewSelected;
     }
 
     public override void RemoveListeners() {
         base.RemoveListeners();
 
-        foreach (var iView in _compositionViews) {
-            //iView.
-        }
+        //foreach (var iView in _compositionViews) {
+        //    iView.CompositionSelected -= OnCompositionSelected;
+        //}
 
-        foreach (var iView in _resultViews) {
-            //iView.
-        }
+        //foreach (var iView in _resultViews) {
+        //    //iView.
+        //}
     }
 
     public override void Reset() {
@@ -60,16 +76,6 @@ public class AccordancePanel : UIPanel {
         _equations = null;
     }
     
-    public List<Transform> GetConnectPointTransforms() {
-        var transforms = new List<Transform>();
-
-        foreach (var iView in _compositionViews) {
-            transforms.Add(iView.ConnectPointTransform);
-        }
-
-        return transforms;
-    }
-
     private void CreateCompositionViews() {
         _compositionViews = new List<MultipliersCompositionView>();
 
@@ -78,9 +84,31 @@ public class AccordancePanel : UIPanel {
 
             MultipliersCompositionView newView = _factory.Get<MultipliersCompositionView>(config, _compositionParent);
             newView.Init(config);
-
+            
             _compositionViews.Add(newView);
         }
+    }
+
+    private List<Vector3> GetStartPoints() {
+        var points = new List<Vector3>();
+
+        foreach (var iView in _compositionViews) {
+            points.Add(iView.ConnectPointPosition);
+        }
+
+        return points;
+    }
+
+    private void OnCompositionViewSelected(MultipliersCompositionView view) {
+        _lineSpawner.GetLineByStartPoint(view.ConnectPointPosition, out _currentLine);
+    }
+
+    private void OnDragged(Vector2 position) {
+        _currentLine.UpdateLine(position);
+    }
+
+    private void OnResultViewSelected(MultipliersResultView view) {
+        _currentLine.EndLine(view.ConnectPointPosition);
     }
 
     private void CreateResultViews() {

@@ -10,12 +10,18 @@ public class ConnectStatusView : MonoBehaviour {
     private Color _currentFillerColor;
     private Color _defaultFillerColor = Color.white;
 
-    [field: SerializeField] public Transform ConnectPoint { get; private set; }
+    public Vector3 ConnectPoint {
+        get {
+            _filler.gameObject.transform.GetPositionAndRotation(out Vector3 position, out Quaternion quaternion);
+            return position;
+        } 
+    }
 
     public void Init(MultipliersCompositionView compositionView) {
         _compositionView = compositionView;
         Reset();
     }
+
 
     public void Reset() {
         _background.color = _compositionView.FrameColor;

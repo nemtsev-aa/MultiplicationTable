@@ -12,7 +12,6 @@ public class AccordanceDialog : TrainingGameDialog {
 
     private EquationFactory _equationFactory;
     private TimeCounter _timeCounter;
-    //private LineSpawner _lineSpawner;
 
     private int _maxEquationCount;
 
@@ -23,7 +22,6 @@ public class AccordanceDialog : TrainingGameDialog {
         DialogType = DialogTypes.Accordance;
 
         _timeCounter = timeCounter;
-        //_lineSpawner = lineSpawner;
     }
 
     public override void Show(bool value) {
@@ -43,7 +41,6 @@ public class AccordanceDialog : TrainingGameDialog {
 
         _equationCountBar.Init(this, _maxEquationCount);
         _accordancePanel.Init(Equations, false);
-        //_lineSpawner.Init(_accordancePanel.GetConnectPointTransforms());
     }
 
     public override void InitializationPanels() {

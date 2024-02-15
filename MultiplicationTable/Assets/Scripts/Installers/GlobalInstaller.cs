@@ -8,7 +8,8 @@ public class GlobalInstaller : MonoInstaller {
     [SerializeField] private QuestionsConfig _questionsConfig;
     [SerializeField] private DrawingsConfig _drawingsConfig;
     [SerializeField] private TrainingGameConfigs _trainingGameConfigs;
-    
+    [SerializeField] private Transform _linesParent;
+    [SerializeField] private Pointer _pointerPrefab;
 
     public override void InstallBindings() {
         BuildModsConfig();
@@ -17,9 +18,13 @@ public class GlobalInstaller : MonoInstaller {
         BuildDifficultyLevelsConfig();
         BuildTrainingGameConfigs();
         BindUICompanentsConfig();
-        
+
+        BildPointer();
+        BindLineSpawner();
+
         BindFactories();
         BindTimeCounter();
+        BindInput();
     }
 
     private void BuildModsConfig() {
@@ -75,5 +80,26 @@ public class GlobalInstaller : MonoInstaller {
 
         Container.BindInstance(timeCounter).AsSingle();
         Container.BindInterfacesAndSelfTo<ITickable>().FromInstance(timeCounter).AsSingle();
+    }
+
+    private void BildPointer() {
+        Pointer pointer = Container.InstantiatePrefabForComponent<Pointer>(_pointerPrefab);
+        Container.Bind<Pointer>().FromInstance(pointer).AsSingle();
+    }
+
+    private void BindLineSpawner() {
+        LineFactory factory = new LineFactory(Container);
+        Container.Bind<LineFactory>().FromInstance(factory).AsSingle();
+
+        Container.Bind<LineSpawner>().AsSingle().NonLazy(); 
+    }
+
+    private void BindInput() {
+        if (SystemInfo.deviceType == DeviceType.Handheld)
+            Container.BindInterfacesAndSelfTo<MobileInput>().AsSingle();
+        else
+            Container.BindInterfacesAndSelfTo<DesktopInput>().AsSingle();
+
+        Container.Bind<MovementHandler>().AsSingle().NonLazy();
     }
 }

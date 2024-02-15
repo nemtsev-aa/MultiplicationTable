@@ -11,12 +11,13 @@ public class MultipliersResultView : UICompanent {
  
     private Color _defaultColor;
 
+    private Color _selectionColor = Color.green;
     private Color _trueVerificationColor = Color.blue;
     private Color _falseVerificationColor = Color.red;
     private Color _frameColor;
 
     public Color FrameColor => _frameColor;
-    public Vector3 ConnectPointPosition => _connectStatus.ConnectPoint.position;
+    public Vector3 ConnectPointPosition => _connectStatus.ConnectPoint;
 
     public void Init(MultipliersResultConfig config) {
         _config = config;
@@ -24,8 +25,13 @@ public class MultipliersResultView : UICompanent {
         FillingCompanents();
     }
 
-    public void SetColor(Color color) {
+    public void Select(bool status) {
+        if (status)
+            _frameColor = _selectionColor;
+        else
+            _frameColor = _defaultColor;
 
+        _frameImage.color = _frameColor;
     }
 
     private void FillingCompanents() {

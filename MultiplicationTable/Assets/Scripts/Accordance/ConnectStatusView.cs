@@ -1,11 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ConnectStatusView : MonoBehaviour {
+public class ConnectStatusView : MonoBehaviour, IDisposable {
     [SerializeField] private Image _background;
     [SerializeField] private Image _filler;
 
-    private MultipliersCompositionView _compositionView;
+    private IConnected _connectedView;
 
     private Color _currentFillerColor;
     private Color _defaultFillerColor = Color.white;
@@ -17,29 +18,28 @@ public class ConnectStatusView : MonoBehaviour {
         } 
     }
 
-    public void Init(MultipliersCompositionView compositionView) {
-        _compositionView = compositionView;
-        Reset();
+    public void Init(IConnected connectedView) {
+        _connectedView = connectedView;
+        
+        AddListeners();
+        OnFrameColorChanged();
     }
 
+    private void AddListeners() {
+        _connectedView.FrameColorChanged += OnFrameColorChanged;
+    }
 
-    public void Reset() {
-        _background.color = _compositionView.FrameColor;
+    private void RemoveListeners() {
+        _connectedView.FrameColorChanged -= OnFrameColorChanged;
+    }
+
+    private void OnFrameColorChanged() {
+        _background.color = _connectedView.FrameColor;
         _currentFillerColor = _defaultFillerColor;
         _filler.color = _currentFillerColor;
     }
 
-    public void SetVerificationStatus(bool status) {
-        _currentFillerColor = _compositionView.FrameColor;
-
-        if (status) {
-            _filler.color = _currentFillerColor;
-            _background.color = _currentFillerColor;
-        }
-        else {
-            _filler.color = _defaultFillerColor;
-            _background.color = _currentFillerColor;
-        }
-
+    public void Dispose() {
+        RemoveListeners();
     }
 }

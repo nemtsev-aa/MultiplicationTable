@@ -18,8 +18,8 @@ public class AccordancePanel : UIPanel {
     private bool _hideAfterSelection;
     private Line _currentLine;
 
-
-    private Vector3 MousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    private MultipliersCompositionView _compositionView;
+    private MultipliersResultView _resultView;
 
     [Inject]
     private void Construct(UICompanentsFactory companentsFactory, MovementHandler movementHandler, LineSpawner lineSpawner) {
@@ -89,28 +89,6 @@ public class AccordancePanel : UIPanel {
         }
     }
 
-    private List<Vector3> GetStartPoints() {
-        var points = new List<Vector3>();
-
-        foreach (var iView in _compositionViews) {
-            points.Add(iView.ConnectPointPosition);
-        }
-
-        return points;
-    }
-
-    private void OnCompositionViewSelected(MultipliersCompositionView view) {
-        _lineSpawner.GetLineByStartPoint(view.ConnectPointPosition, out _currentLine);
-    }
-
-    private void OnDragged(Vector2 position) {
-        _currentLine.UpdateLine(position);
-    }
-
-    private void OnResultViewSelected(MultipliersResultView view) {
-        _currentLine.EndLine(view.ConnectPointPosition);
-    }
-
     private void CreateResultViews() {
         var shuffledEquation = Shuffle(_equations);
         _resultViews = new List<MultipliersResultView>();
@@ -123,6 +101,35 @@ public class AccordancePanel : UIPanel {
 
             _resultViews.Add(newView);
         }
+    }
+    
+    private void OnCompositionViewSelected(MultipliersCompositionView view) {
+        _compositionView = view;
+        _compositionView.Select(true);
+
+        _lineSpawner.SpawnLine(view.ConnectPointPosition, out Line line);
+        _currentLine = line;
+        _currentLine.SetColor(_compositionView.FrameColor);
+    }
+
+    private void OnDragged(Vector2 position) {
+        _currentLine.UpdateLine(position);
+    }
+
+    private void OnResultViewSelected(MultipliersResultView view) {
+        if (view == null) {
+            _compositionView.Select(false);
+            _compositionView = null;
+
+            Line line = _lineSpawner.GetLineByStartPoint(_currentLine.StartPoint);
+            _lineSpawner.RemoveLine(line);
+            Destroy(line.gameObject);
+
+            return;
+        }
+
+        _resultView = view;
+        view.Select(true);
     }
 
     private List<EquationData> Shuffle(List<EquationData> list) {

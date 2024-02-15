@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Zenject;
 
 public class LineSpawner {
-    private Transform _linesParent;
     private LineFactory _lineFactory;
 
     private List<Line> _lines;
@@ -15,23 +12,25 @@ public class LineSpawner {
         _lines = new List<Line>();
     }
 
-    public IEnumerable<Line> Lines {
-        get { return _lines; }
+    public void SpawnLine(Vector3 point, out Line line) {
+        line = GetLineByStartPoint(point);
+
+        if (line == null) {
+            Start(point);
+            line = _lines[_lines.Count - 1];
+        }
+    }
+    public Line GetLineByStartPoint(Vector3 startPoint) {
+        return _lines.FirstOrDefault(line => line.StartPoint == startPoint);
     }
 
-    private void StartSpawn(Vector3 startPointPosition) {
+    public void RemoveLine(Line line) => _lines.Remove(line);
+    
+    private void Start(Vector3 startPointPosition) {
         Line newLine = _lineFactory.Get();
         newLine.Init(startPointPosition);
 
         _lines.Add(newLine);
     }
 
-    public void GetLineByStartPoint(Vector3 point, out Line line) {
-        line = _lines.FirstOrDefault(line => line.StartPoint == point);
-
-        if (line == null) {
-            StartSpawn(point);
-            line = _lines[_lines.Count];
-        }
-    }
 }

@@ -128,7 +128,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _background: {fileID: 4081569912610999816}
   _filler: {fileID: 1963400653186424725}
-  <ConnectPoint>k__BackingField: {fileID: 7097527322932641975}
 --- !u!1 &5862539933897958008
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +397,8 @@ MonoBehaviour:
   _labelValue: {fileID: 7899366673630970886}
   _frameImage: {fileID: 4034523949372291975}
   _connectStatus: {fileID: 4522972728061583690}
+  <ConnectedViewConfig>k__BackingField: {fileID: 11400000, guid: dff68d4a37c07ce4dbb6959e12113427,
+    type: 2}
 --- !u!50 &4093689803005530140
 Rigidbody2D:
   serializedVersion: 4

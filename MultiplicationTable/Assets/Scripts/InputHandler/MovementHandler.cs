@@ -40,7 +40,7 @@ public class MovementHandler : IDisposable {
     }
 
     private void ClickUp(Vector3 position) {
-        Debug.Log("ClickUp");
+       
         _isDragging = false;
 
         RaycastHit2D hit = Physics2D.Raycast(GetWorldPoint(position), Vector2.zero);

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06c1dafb13d1bd34db71c7cbed2dfc9b, type: 3}
-  m_Name: ConnectedViewConfig
+  m_Name: AccordanceCompanentConfig
   m_EditorClassIdentifier: 
   <DefaultColor>k__BackingField: {r: 0.015686275, g: 0.38039216, b: 0.67058825, a: 1}
   <SelectionColor>k__BackingField: {r: 1, g: 0, b: 0.5686275, a: 1}

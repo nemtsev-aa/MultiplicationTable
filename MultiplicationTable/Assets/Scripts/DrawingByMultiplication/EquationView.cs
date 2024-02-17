@@ -64,7 +64,7 @@ public class EquationView : UICompanent {
         _multipliableText.text = $"{_data.Multipliable}";
         _multiplierText.text = $"{MultiplierDefaultText}";
         _equationText.text = $"{EqualChar}";
-        _resultText.text = $"{_data.Result}";
+        _resultText.text = $"{_data.Answer}";
 
         if (_data.BaseColor != Color.clear)
             _backgroundColor.color = _data.BaseColor;

@@ -394,10 +394,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8280aef052b7cdc44a03a3b1ebf95fa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _labelValue: {fileID: 7899366673630970886}
-  _frameImage: {fileID: 4034523949372291975}
-  _connectStatus: {fileID: 4522972728061583690}
-  <ConnectedViewConfig>k__BackingField: {fileID: 11400000, guid: dff68d4a37c07ce4dbb6959e12113427,
+  LabelValue: {fileID: 7899366673630970886}
+  FrameImage: {fileID: 4034523949372291975}
+  ConnectStatus: {fileID: 4522972728061583690}
+  <AccordanceCompanentConfig>k__BackingField: {fileID: 11400000, guid: dff68d4a37c07ce4dbb6959e12113427,
     type: 2}
 --- !u!50 &4093689803005530140
 Rigidbody2D:
@@ -591,7 +591,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: f2d1db67f26a74f13bb10147155953dd, type: 3}
-  m_Type: 0
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -599,4 +599,4 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.01
+  m_PixelsPerUnitMultiplier: 0.63

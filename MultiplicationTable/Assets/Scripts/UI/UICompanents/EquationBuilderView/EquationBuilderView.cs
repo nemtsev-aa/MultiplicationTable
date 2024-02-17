@@ -85,7 +85,7 @@ public class EquationBuilderView : UICompanent {
         //_multiplierText.text = $"{MultiplierDefaultText}";
 
         _equationText.text = $"{EqualChar}";
-        _resultText.text = $"{_data.Result}";
+        _resultText.text = $"{_data.Answer}";
 
         if (_data.BaseColor != Color.clear)
             _backgroundColor.color = _data.BaseColor;
@@ -96,7 +96,7 @@ public class EquationBuilderView : UICompanent {
             return;
 
         int composition = Multipliable * Multiplier;
-        bool result = (composition == _data.Result) ? true : false;
+        bool result = (composition == _data.Answer) ? true : false;
 
         ShowEquationVerificationResult(result);
         EquationVerificatedChanged?.Invoke(_data, result);

@@ -6,7 +6,7 @@ public class ConnectStatusView : MonoBehaviour, IDisposable {
     [SerializeField] private Image _background;
     [SerializeField] private Image _filler;
 
-    private IConnected _connectedView;
+    private AccordanceCompanent _connectedView;
 
     private Color _currentFillerColor;
     private Color _defaultFillerColor = Color.white;
@@ -18,7 +18,7 @@ public class ConnectStatusView : MonoBehaviour, IDisposable {
         } 
     }
 
-    public void Init(IConnected connectedView) {
+    public void Init(AccordanceCompanent connectedView) {
         _connectedView = connectedView;
         
         AddListeners();

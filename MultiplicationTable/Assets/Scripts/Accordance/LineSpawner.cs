@@ -20,17 +20,19 @@ public class LineSpawner {
             line = _lines[_lines.Count - 1];
         }
     }
+
     public Line GetLineByStartPoint(Vector3 startPoint) {
         return _lines.FirstOrDefault(line => line.StartPoint == startPoint);
     }
 
     public void RemoveLine(Line line) => _lines.Remove(line);
-    
+
+    public void Reset() => _lines.Clear();
+
     private void Start(Vector3 startPointPosition) {
         Line newLine = _lineFactory.Get();
         newLine.Init(startPointPosition);
 
         _lines.Add(newLine);
     }
-
 }

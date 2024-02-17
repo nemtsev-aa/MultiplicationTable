@@ -48,7 +48,49 @@ public class AccordanceDialog : TrainingGameDialog {
         _accordancePanel = GetPanelByType<AccordancePanel>();
     }
 
-    public override void PreparingForClosure() {
+    public override void AddListeners() {
+        base.AddListeners();
 
+        _accordancePanel.EquationVerificatedChanged += OnEquationVerificatedChanged;
+    }
+
+    public override void ResetPanels() {
+        base.ResetPanels();
+
+        _timeCounter.Reset();
+        PassedEquation.Clear();
+    }
+
+    public override void PreparingForClosure() {
+        bool gameResult = (EquationsCount > 0) ? true : false;
+
+        AttemptData data = new AttemptData(Data,
+            _timeCounter.RemainingTime,
+            gameResult,
+            PassedEquation);
+
+        TrainingGameFinished?.Invoke(data);
+    }
+    
+    private void OnEquationVerificatedChanged(EquationData data, bool verificationValue) {
+        SetVerificationResult(data, verificationValue);
+
+        if (verificationValue == false)
+            return;
+
+        Equations.Remove(data);
+        EquationsCountChanged?.Invoke(Equations.Count, _maxEquationCount);
+
+        if (EquationsCount == 0)
+            Invoke(nameof(PreparingForClosure), DelaySwitchingEquation);
+    }
+
+    private void SetVerificationResult(EquationData data, bool result) {
+        var equation = new EquationData(
+            data.Multipliable,
+            data.Multiplier,
+            result);
+
+        PassedEquation.Add(equation);
     }
 }
